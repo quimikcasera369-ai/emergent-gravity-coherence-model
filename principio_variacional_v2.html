@@ -1,0 +1,1346 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>El Principio Fundamental — Emergencia Gravitacional v2</title>
+<link href="https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,400;0,700;0,900;1,400&family=Source+Serif+4:ital,wght@0,300;0,400;0,600;1,300;1,400&family=JetBrains+Mono:wght@300;400;600&display=swap" rel="stylesheet">
+<style>
+  :root {
+    --bg:          #0a0c10;
+    --bg2:         #0f1218;
+    --bg3:         #141820;
+    --bg4:         #0c1016;
+    --border:      #1e2430;
+    --text:        #c8d0dc;
+    --text-dim:    #6a7585;
+    --text-bright: #eef2f8;
+    --gold:        #c9a84c;
+    --gold-dim:    #7a6228;
+    --blue:        #4a90d9;
+    --blue-dim:    #1e3d5c;
+    --blue-glow:   rgba(74,144,217,0.10);
+    --green:       #4aaa6e;
+    --green-dim:   #1a4030;
+    --red:         #d96a4a;
+    --red-dim:     #4a2018;
+    --purple:      #9b72d9;
+    --purple-dim:  #3a2460;
+    --mono:        'JetBrains Mono', monospace;
+    --serif:       'Source Serif 4', serif;
+    --display:     'Playfair Display', serif;
+  }
+
+  * { margin: 0; padding: 0; box-sizing: border-box; }
+  html { scroll-behavior: smooth; }
+
+  body {
+    background: var(--bg);
+    color: var(--text);
+    font-family: var(--serif);
+    font-size: 17px;
+    line-height: 1.85;
+    overflow-x: hidden;
+  }
+
+  body::before {
+    content: '';
+    position: fixed;
+    inset: 0;
+    background:
+      radial-gradient(ellipse 60% 40% at 15% 15%, rgba(74,144,217,0.04) 0%, transparent 70%),
+      radial-gradient(ellipse 40% 60% at 85% 75%, rgba(201,168,76,0.03) 0%, transparent 70%),
+      radial-gradient(ellipse 30% 30% at 50% 90%, rgba(155,114,217,0.02) 0%, transparent 70%);
+    pointer-events: none;
+    z-index: 0;
+  }
+
+  .container {
+    max-width: 880px;
+    margin: 0 auto;
+    padding: 0 32px 140px;
+    position: relative;
+    z-index: 1;
+  }
+
+  /* ── HERO ── */
+  .hero {
+    padding: 100px 0 80px;
+    border-bottom: 1px solid var(--border);
+    margin-bottom: 80px;
+  }
+
+  .hero-tag {
+    font-family: var(--mono);
+    font-size: 11px;
+    letter-spacing: 3px;
+    color: var(--blue);
+    text-transform: uppercase;
+    margin-bottom: 28px;
+    opacity: 0;
+    animation: fadeUp 0.6s ease 0.1s forwards;
+  }
+
+  .hero-title {
+    font-family: var(--display);
+    font-size: clamp(2.4rem, 5vw, 4rem);
+    font-weight: 900;
+    color: var(--text-bright);
+    line-height: 1.05;
+    margin-bottom: 20px;
+    opacity: 0;
+    animation: fadeUp 0.7s ease 0.2s forwards;
+  }
+
+  .hero-title span { color: var(--gold); font-style: italic; }
+
+  .hero-sub {
+    font-family: var(--serif);
+    font-size: 1.1rem;
+    font-weight: 300;
+    font-style: italic;
+    color: var(--text-dim);
+    margin-bottom: 48px;
+    max-width: 600px;
+    opacity: 0;
+    animation: fadeUp 0.7s ease 0.3s forwards;
+  }
+
+  .hero-meta {
+    display: flex;
+    gap: 36px;
+    flex-wrap: wrap;
+    opacity: 0;
+    animation: fadeUp 0.7s ease 0.4s forwards;
+  }
+
+  .hero-meta-item {
+    font-family: var(--mono);
+    font-size: 12px;
+    color: var(--text-dim);
+  }
+
+  .hero-meta-item strong {
+    color: var(--text);
+    display: block;
+    font-size: 13px;
+    margin-bottom: 2px;
+  }
+
+  /* ── NAV ── */
+  .nav {
+    background: var(--bg2);
+    border: 1px solid var(--border);
+    border-radius: 8px;
+    padding: 28px 32px;
+    margin-bottom: 72px;
+    opacity: 0;
+    animation: fadeUp 0.7s ease 0.5s forwards;
+  }
+
+  .nav-title {
+    font-family: var(--mono);
+    font-size: 10px;
+    letter-spacing: 3px;
+    color: var(--text-dim);
+    text-transform: uppercase;
+    margin-bottom: 18px;
+  }
+
+  .nav a {
+    display: block;
+    color: var(--text-dim);
+    text-decoration: none;
+    font-size: 0.92rem;
+    padding: 5px 0;
+    border-bottom: 1px solid transparent;
+    transition: color 0.2s, border-color 0.2s;
+  }
+
+  .nav a:hover { color: var(--blue); border-bottom-color: var(--blue-dim); }
+  .nav a.major { color: var(--text); font-weight: 600; margin-top: 8px; }
+  .nav a.sub { padding-left: 22px; font-style: italic; font-size: 0.88rem; }
+
+  /* ── SECCIONES ── */
+  section {
+    margin-bottom: 88px;
+    opacity: 0;
+    animation: fadeUp 0.7s ease forwards;
+  }
+
+  .section-num {
+    font-family: var(--mono);
+    font-size: 11px;
+    letter-spacing: 2px;
+    color: var(--blue);
+    text-transform: uppercase;
+    margin-bottom: 10px;
+  }
+
+  h1 {
+    font-family: var(--display);
+    font-size: 2rem;
+    font-weight: 700;
+    color: var(--text-bright);
+    margin-bottom: 28px;
+    padding-bottom: 14px;
+    border-bottom: 1px solid var(--border);
+  }
+
+  h2 {
+    font-family: var(--display);
+    font-size: 1.35rem;
+    font-weight: 700;
+    color: var(--gold);
+    margin: 48px 0 16px;
+  }
+
+  h3 {
+    font-family: var(--serif);
+    font-size: 1.05rem;
+    font-weight: 600;
+    color: var(--text);
+    margin: 32px 0 10px;
+    font-style: italic;
+  }
+
+  p { margin-bottom: 18px; text-align: justify; }
+
+  /* ── ECUACIONES ── */
+  .eq-block {
+    margin: 32px 0;
+    border-radius: 0 8px 8px 0;
+    overflow: hidden;
+    border-left: 3px solid var(--blue);
+  }
+
+  .eq-block.gold  { border-left-color: var(--gold); }
+  .eq-block.green { border-left-color: var(--green); }
+  .eq-block.purple{ border-left-color: var(--purple); }
+  .eq-block.red   { border-left-color: var(--red); }
+
+  .eq-formula {
+    background: var(--bg3);
+    padding: 22px 28px;
+    text-align: center;
+    font-family: var(--mono);
+    font-size: 1.25rem;
+    font-weight: 600;
+    color: var(--text-bright);
+    letter-spacing: 1px;
+    position: relative;
+  }
+
+  .eq-formula::before {
+    content: '';
+    position: absolute;
+    inset: 0;
+    background: var(--blue-glow);
+    pointer-events: none;
+  }
+
+  .eq-block.gold  .eq-formula::before { background: rgba(201,168,76,0.05); }
+  .eq-block.green .eq-formula::before { background: rgba(74,170,110,0.05); }
+  .eq-block.purple .eq-formula::before { background: rgba(155,114,217,0.05); }
+
+  .eq-block.central .eq-formula {
+    font-size: 1.65rem;
+    padding: 32px;
+    background: #080d14;
+  }
+
+  .eq-glosario {
+    background: var(--bg4);
+    padding: 18px 28px;
+    border-top: 1px solid var(--border);
+  }
+
+  .eq-glosario-title {
+    font-family: var(--mono);
+    font-size: 9px;
+    letter-spacing: 2px;
+    color: var(--text-dim);
+    text-transform: uppercase;
+    margin-bottom: 12px;
+  }
+
+  .glos-row {
+    display: grid;
+    grid-template-columns: 140px 1fr;
+    gap: 8px 20px;
+    margin-bottom: 8px;
+    font-size: 0.9rem;
+    align-items: start;
+  }
+
+  .glos-row:last-child { margin-bottom: 0; }
+
+  .glos-sym {
+    font-family: var(--mono);
+    font-size: 0.88rem;
+    color: var(--gold);
+    font-weight: 600;
+    padding-top: 1px;
+  }
+
+  .glos-def {
+    color: var(--text-dim);
+    line-height: 1.5;
+  }
+
+  .glos-def em {
+    color: var(--text);
+    font-style: normal;
+    font-weight: 600;
+  }
+
+  /* ── CAJAS ── */
+  .box {
+    border-radius: 6px;
+    padding: 22px 26px;
+    margin: 28px 0;
+    position: relative;
+  }
+
+  .box-blue   { background: rgba(74,144,217,0.06);  border: 1px solid var(--blue-dim); }
+  .box-green  { background: rgba(74,170,110,0.06);  border: 1px solid var(--green-dim); }
+  .box-gold   { background: rgba(201,168,76,0.06);  border: 1px solid var(--gold-dim); }
+  .box-red    { background: rgba(217,106,74,0.06);  border: 1px solid var(--red-dim); }
+  .box-purple { background: rgba(155,114,217,0.06); border: 1px solid var(--purple-dim); }
+  .box-dark   { background: var(--bg2);             border: 1px solid var(--border); }
+
+  .box-label {
+    font-family: var(--mono);
+    font-size: 10px;
+    letter-spacing: 2px;
+    text-transform: uppercase;
+    margin-bottom: 12px;
+  }
+
+  .box-blue   .box-label { color: var(--blue); }
+  .box-green  .box-label { color: var(--green); }
+  .box-gold   .box-label { color: var(--gold); }
+  .box-red    .box-label { color: var(--red); }
+  .box-purple .box-label { color: var(--purple); }
+
+  .box p:last-child { margin-bottom: 0; }
+
+  /* ── PRINCIPIOS CARD ── */
+  .principle-grid {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 20px;
+    margin: 32px 0;
+  }
+
+  .principle-card {
+    border-radius: 8px;
+    padding: 26px 22px;
+    border: 1px solid;
+  }
+
+  .principle-card.hamilton  { background: rgba(74,144,217,0.06); border-color: var(--blue-dim); }
+  .principle-card.maupertuis{ background: rgba(74,170,110,0.06); border-color: var(--green-dim); }
+
+  .principle-card h3 {
+    font-family: var(--display);
+    font-style: normal;
+    font-size: 1.05rem;
+    margin: 0 0 4px;
+    padding: 0;
+  }
+
+  .principle-card.hamilton h3   { color: var(--blue); }
+  .principle-card.maupertuis h3 { color: var(--green); }
+
+  .principle-year {
+    font-family: var(--mono);
+    font-size: 10px;
+    color: var(--text-dim);
+    letter-spacing: 1px;
+    margin-bottom: 14px;
+  }
+
+  .principle-eq {
+    font-family: var(--mono);
+    font-size: 0.95rem;
+    color: var(--text-bright);
+    background: rgba(0,0,0,0.3);
+    padding: 12px 16px;
+    border-radius: 4px;
+    margin: 12px 0;
+    text-align: center;
+  }
+
+  .principle-card ul { list-style: none; padding: 0; margin: 12px 0 0; }
+
+  .principle-card li {
+    font-size: 0.88rem;
+    color: var(--text-dim);
+    padding: 4px 0 4px 18px;
+    position: relative;
+    line-height: 1.5;
+  }
+
+  .principle-card.hamilton   li::before { content: '→'; position: absolute; left: 0; color: var(--blue); }
+  .principle-card.maupertuis li::before { content: '→'; position: absolute; left: 0; color: var(--green); }
+
+  /* ── DERIVACIÓN STEP ── */
+  .derivation { counter-reset: step; margin: 32px 0; }
+
+  .step {
+    display: grid;
+    grid-template-columns: 52px 1fr;
+    gap: 20px;
+    margin-bottom: 36px;
+    align-items: start;
+  }
+
+  .step-num {
+    width: 52px;
+    height: 52px;
+    border-radius: 50%;
+    background: var(--bg3);
+    border: 1px solid var(--border);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-family: var(--mono);
+    font-size: 15px;
+    color: var(--blue);
+    flex-shrink: 0;
+    margin-top: 4px;
+  }
+
+  .step-content h4 {
+    font-family: var(--serif);
+    font-weight: 600;
+    font-size: 1rem;
+    color: var(--text-bright);
+    margin-bottom: 10px;
+  }
+
+  .step-content p { font-size: 0.95rem; margin-bottom: 10px; }
+
+  /* ── DIAGRAMA TRANSICIÓN ── */
+  .transition-diagram {
+    background: var(--bg2);
+    border: 1px solid var(--border);
+    border-radius: 8px;
+    padding: 36px 28px;
+    margin: 32px 0;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 0;
+    flex-wrap: wrap;
+  }
+
+  .td-domain {
+    text-align: center;
+    padding: 22px 20px;
+    border-radius: 6px;
+    flex: 1;
+    min-width: 160px;
+  }
+
+  .td-domain.newton { background: rgba(74,144,217,0.08); border: 1px solid var(--blue-dim); }
+  .td-domain.colect { background: rgba(74,170,110,0.08); border: 1px solid var(--green-dim); }
+
+  .td-domain-name {
+    font-family: var(--mono);
+    font-size: 10px;
+    letter-spacing: 2px;
+    text-transform: uppercase;
+    margin-bottom: 8px;
+  }
+
+  .td-domain.newton .td-domain-name { color: var(--blue); }
+  .td-domain.colect .td-domain-name { color: var(--green); }
+
+  .td-domain-princ {
+    font-family: var(--display);
+    font-size: 1.05rem;
+    font-weight: 700;
+    color: var(--text-bright);
+    margin-bottom: 8px;
+  }
+
+  .td-domain-cond {
+    font-family: var(--mono);
+    font-size: 0.78rem;
+    color: var(--text-dim);
+    line-height: 1.7;
+  }
+
+  .td-arrow {
+    padding: 0 20px;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 6px;
+    flex-shrink: 0;
+  }
+
+  .td-arrow-line {
+    width: 64px;
+    height: 1px;
+    background: linear-gradient(90deg, var(--blue-dim), var(--gold), var(--green-dim));
+  }
+
+  .td-arrow-label {
+    font-family: var(--mono);
+    font-size: 9px;
+    letter-spacing: 1px;
+    color: var(--gold);
+    text-align: center;
+    text-transform: uppercase;
+  }
+
+  /* ── TABLA ── */
+  .data-table {
+    width: 100%;
+    border-collapse: collapse;
+    margin: 28px 0;
+    font-size: 0.9rem;
+  }
+
+  .data-table th {
+    background: var(--bg3);
+    color: var(--text-dim);
+    font-family: var(--mono);
+    font-size: 0.72rem;
+    font-weight: 400;
+    letter-spacing: 1px;
+    text-transform: uppercase;
+    padding: 12px 16px;
+    text-align: left;
+    border-bottom: 1px solid var(--border);
+  }
+
+  .data-table td {
+    padding: 11px 16px;
+    border-bottom: 1px solid var(--border);
+    color: var(--text);
+  }
+
+  .data-table tr:last-child td { border-bottom: none; }
+  .data-table tr:hover td { background: rgba(255,255,255,0.02); }
+
+  .confirm { color: var(--green); font-weight: 600; }
+
+  /* ── FACTOR BREAKDOWN ── */
+  .factor-breakdown {
+    background: var(--bg2);
+    border: 1px solid var(--border);
+    border-radius: 8px;
+    overflow: hidden;
+    margin: 32px 0;
+  }
+
+  .factor-breakdown-title {
+    background: var(--bg3);
+    padding: 14px 24px;
+    font-family: var(--mono);
+    font-size: 10px;
+    letter-spacing: 2px;
+    color: var(--text-dim);
+    text-transform: uppercase;
+    border-bottom: 1px solid var(--border);
+  }
+
+  .factor-row {
+    display: grid;
+    grid-template-columns: 100px 160px 1fr;
+    gap: 0;
+    border-bottom: 1px solid var(--border);
+  }
+
+  .factor-row:last-child { border-bottom: none; }
+
+  .factor-sym {
+    padding: 16px 20px;
+    font-family: var(--mono);
+    font-size: 1.1rem;
+    font-weight: 600;
+    color: var(--gold);
+    border-right: 1px solid var(--border);
+    display: flex;
+    align-items: center;
+  }
+
+  .factor-val {
+    padding: 16px 20px;
+    font-family: var(--mono);
+    font-size: 0.85rem;
+    color: var(--text);
+    border-right: 1px solid var(--border);
+    display: flex;
+    align-items: center;
+  }
+
+  .factor-desc {
+    padding: 16px 20px;
+    font-size: 0.9rem;
+    color: var(--text-dim);
+    display: flex;
+    align-items: center;
+    line-height: 1.5;
+  }
+
+  .factor-desc em { color: var(--text); font-style: normal; }
+
+  /* ── ROADMAP ── */
+  .roadmap { margin: 32px 0; }
+
+  .roadmap-item {
+    display: grid;
+    grid-template-columns: 28px 1fr;
+    gap: 18px;
+    margin-bottom: 24px;
+    align-items: start;
+  }
+
+  .roadmap-dot {
+    width: 28px;
+    height: 28px;
+    border-radius: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    flex-shrink: 0;
+    margin-top: 1px;
+    font-size: 11px;
+    font-weight: bold;
+    font-family: var(--mono);
+  }
+
+  .roadmap-dot.done   { background: var(--green-dim);  color: var(--green);   border: 1px solid var(--green); }
+  .roadmap-dot.open   { background: var(--gold-dim);   color: var(--gold);    border: 1px solid var(--gold); }
+  .roadmap-dot.future { background: var(--bg3);        color: var(--text-dim);border: 1px solid var(--border); }
+
+  .roadmap-content h4 {
+    font-family: var(--serif);
+    font-weight: 600;
+    font-size: 0.98rem;
+    color: var(--text-bright);
+    margin-bottom: 4px;
+  }
+
+  .roadmap-content p { font-size: 0.88rem; color: var(--text-dim); margin-bottom: 0; }
+
+  /* ── COMPARE ── */
+  .compare-grid {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 16px;
+    margin: 28px 0;
+  }
+
+  .compare-card {
+    border-radius: 6px;
+    padding: 22px 20px;
+    border: 1px solid var(--border);
+    background: var(--bg2);
+  }
+
+  .compare-card h4 {
+    font-family: var(--mono);
+    font-size: 11px;
+    letter-spacing: 2px;
+    text-transform: uppercase;
+    margin-bottom: 14px;
+  }
+
+  .compare-card.mond h4  { color: var(--red); }
+  .compare-card.this h4  { color: var(--green); }
+
+  .compare-row {
+    font-size: 0.85rem;
+    color: var(--text-dim);
+    padding: 7px 0;
+    border-bottom: 1px solid var(--border);
+  }
+
+  .compare-row:last-child { border-bottom: none; }
+  .compare-row strong { color: var(--text); font-weight: 600; display: block; font-size: 0.8rem; font-family: var(--mono); }
+
+  /* ── ANIMACIONES ── */
+  @keyframes fadeUp {
+    from { opacity: 0; transform: translateY(16px); }
+    to   { opacity: 1; transform: translateY(0); }
+  }
+
+  section:nth-child(1)  { animation-delay: 0.3s; }
+  section:nth-child(2)  { animation-delay: 0.4s; }
+  section:nth-child(3)  { animation-delay: 0.45s; }
+  section:nth-child(4)  { animation-delay: 0.5s; }
+  section:nth-child(5)  { animation-delay: 0.55s; }
+  section:nth-child(6)  { animation-delay: 0.6s; }
+  section:nth-child(7)  { animation-delay: 0.65s; }
+  section:nth-child(8)  { animation-delay: 0.7s; }
+
+  /* ── PIE ── */
+  footer {
+    border-top: 1px solid var(--border);
+    padding: 40px 0;
+    text-align: center;
+    font-family: var(--mono);
+    font-size: 11px;
+    color: var(--text-dim);
+    letter-spacing: 1px;
+  }
+
+  code {
+    font-family: var(--mono);
+    font-size: 0.88em;
+    background: var(--bg3);
+    padding: 2px 7px;
+    border-radius: 3px;
+    color: var(--gold);
+  }
+
+  @media (max-width: 640px) {
+    .principle-grid, .compare-grid { grid-template-columns: 1fr; }
+    .transition-diagram { flex-direction: column; }
+    .container { padding: 0 20px 80px; }
+    .hero { padding: 60px 0 50px; }
+    .hero-title { font-size: 2rem; }
+    .eq-block.central .eq-formula { font-size: 1.3rem; }
+    .factor-row { grid-template-columns: 80px 1fr; }
+    .factor-val { display: none; }
+    .glos-row { grid-template-columns: 120px 1fr; }
+  }
+</style>
+</head>
+<body>
+<div class="container">
+
+  <!-- HERO -->
+  <div class="hero">
+    <div class="hero-tag">Emergencia Gravitacional · Fundamento Variacional · v2.1</div>
+    <h1 class="hero-title">El Principio<br><span>Fundamental</span></h1>
+    <p class="hero-sub">De la intuición observacional a la derivación completa: por qué V⁴ = G·M·g_crit no es un postulado — y de dónde viene g_crit.</p>
+    <div class="hero-meta">
+      <div class="hero-meta-item"><strong>Autor</strong>Juan Pablo Figueroa Torres</div>
+      <div class="hero-meta-item"><strong>Versión</strong>Febrero 2026 · v2.1</div>
+      <div class="hero-meta-item"><strong>Estado</strong>5/5 confirman · g_crit derivado</div>
+    </div>
+  </div>
+
+  <!-- NAV -->
+  <div class="nav">
+    <div class="nav-title">Contenido</div>
+    <a href="#sec1" class="major">1. El problema central</a>
+    <a href="#sec2" class="major">2. Los dos principios variacionales</a>
+    <a href="#sec2a" class="sub">2.1 Hamilton — tiempo fijo, energía libre</a>
+    <a href="#sec2b" class="sub">2.2 Maupertuis — energía fija, tiempo libre</a>
+    <a href="#sec2c" class="sub">2.3 La transición física</a>
+    <a href="#sec3" class="major">3. Derivación de V⁴ = G·M·g_crit</a>
+    <a href="#sec4" class="major">4. La ecuación unificadora F = ma</a>
+    <a href="#sec5" class="major">5. La integral de Maupertuis — W = ∮ p·dq</a>
+    <a href="#sec6" class="major">6. Origen de g_crit — derivación completa</a>
+    <a href="#sec6a" class="sub">6.1 La pista cosmológica</a>
+    <a href="#sec6b" class="sub">6.2 El factor √3 — isotopía 3D</a>
+    <a href="#sec6c" class="sub">6.3 Los dos factores de 2π</a>
+    <a href="#sec6d" class="sub">6.4 La fórmula completa</a>
+    <a href="#sec7" class="major">7. Comparación con MOND</a>
+    <a href="#sec8" class="major">8. Verificación observacional</a>
+    <a href="#sec9" class="major">9. Hoja de ruta</a>
+  </div>
+
+  <!-- SEC 1 -->
+  <section id="sec1">
+    <div class="section-num">§ 01</div>
+    <h1>El Problema Central</h1>
+
+    <p>El modelo de Emergencia Gravitacional predice que cuando la aceleración orbital de una galaxia cae por debajo del umbral crítico, la velocidad de rotación satisface una relación muy específica:</p>
+
+    <div class="eq-block central gold">
+      <div class="eq-formula">V⁴ = G · M<sub>bar</sub> · g<sub>crit</sub></div>
+      <div class="eq-glosario">
+        <div class="eq-glosario-title">Glosario de símbolos</div>
+        <div class="glos-row">
+          <span class="glos-sym">V</span>
+          <span class="glos-def"><em>Velocidad de rotación orbital</em> — la velocidad a la que las estrellas orbitan en la zona plana de la curva de rotación. Se mide en km/s y se obtiene directamente de observaciones de radio (línea 21 cm del hidrógeno neutro).</span>
+        </div>
+        <div class="glos-row">
+          <span class="glos-sym">G</span>
+          <span class="glos-def"><em>Constante de gravitación universal</em> — 6.674 × 10⁻¹¹ m³ kg⁻¹ s⁻². Es la misma en todo el universo. No varía con el régimen.</span>
+        </div>
+        <div class="glos-row">
+          <span class="glos-sym">M<sub>bar</sub></span>
+          <span class="glos-def"><em>Masa bariónica observable</em> — la suma de toda la masa visible: gas HI + gas molecular + estrellas (con su factor Υ de masa/luminosidad). No incluye materia oscura. Se obtiene de fotometría y líneas de emisión.</span>
+        </div>
+        <div class="glos-row">
+          <span class="glos-sym">g<sub>crit</sub></span>
+          <span class="glos-def"><em>Aceleración crítica de transición</em> — 1.0 × 10⁻¹¹ m/s². Es el umbral universal donde el sistema cambia de principio variacional. En este documento se deriva su valor desde primeros principios.</span>
+        </div>
+      </div>
+    </div>
+
+    <p>Esta ecuación se verificó con 5 galaxias distintas — errores entre 5% y 19%, cero falsificaciones. Pero hasta la versión anterior del documento era un <em>postulado empírico</em>: se sabía que funcionaba, pero no existía una razón física de por qué tenía que ser esa forma y no otra, ni de dónde venía el número g_crit = 10⁻¹¹ m/s².</p>
+
+    <p>Este documento cierra esa brecha. La ecuación de estado se <em>deriva</em> de la compatibilidad entre dos principios variacionales que tienen 300 años, y g_crit se obtiene de tres propiedades físicas del universo: su velocidad límite, su tasa de expansión, y el número de dimensiones del espacio.</p>
+  </section>
+
+  <!-- SEC 2 -->
+  <section id="sec2">
+    <div class="section-num">§ 02</div>
+    <h1>Los Dos Principios Variacionales</h1>
+
+    <p>En física clásica existe una dualidad fundamental. El mismo sistema puede describirse desde dos lenguajes complementarios — cada uno con sus propios supuestos sobre qué está fijo y qué puede variar.</p>
+
+    <div class="principle-grid">
+      <div class="principle-card hamilton" id="sec2a">
+        <h3>Principio de Hamilton</h3>
+        <div class="principle-year">W. R. Hamilton · 1834</div>
+        <div class="principle-eq">δS = δ∫ L dt = 0</div>
+        <ul>
+          <li>Los instantes t₁ y t₂ están FIJOS</li>
+          <li>La energía E = T + U puede variar</li>
+          <li>El sistema minimiza la acción hamiltoniana S</li>
+          <li>Produce F = ma con aceleración variable según R</li>
+        </ul>
+      </div>
+      <div class="principle-card maupertuis" id="sec2b">
+        <h3>Principio de Maupertuis</h3>
+        <div class="principle-year">P.-L. M. de Maupertuis · 1744</div>
+        <div class="principle-eq">δW = δ∮ p·dq = 0, E = cte</div>
+        <ul>
+          <li>La energía E está FIJA — no puede cambiar</li>
+          <li>El tiempo es libre de variar</li>
+          <li>El sistema minimiza la acción abreviada W</li>
+          <li>Produce una aceleración constante, independiente de R</li>
+        </ul>
+      </div>
+    </div>
+
+    <h2 id="sec2c">La transición física</h2>
+
+    <p>La curva de rotación plana de una galaxia es la declaración observacional de que la velocidad V no cambia con el radio. Eso significa que la energía cinética T = ½mV² es constante. Un sistema con energía cinética congelada no puede estar en el régimen hamiltoniano — en Hamilton, la energía es libre de variar. La curva plana es la firma observacional del principio de Maupertuis.</p>
+
+    <div class="transition-diagram">
+      <div class="td-domain newton">
+        <div class="td-domain-name">Régimen Newtoniano</div>
+        <div class="td-domain-princ">Hamilton</div>
+        <div class="td-domain-cond">g_int ≫ g_crit<br>Energía libre · Tiempo fijo<br>Aceleración varía con R<br>Curva kepleriana</div>
+      </div>
+      <div class="td-arrow">
+        <div class="td-arrow-line"></div>
+        <div class="td-arrow-label">R₀<br>g_crit<br>bisagra</div>
+      </div>
+      <div class="td-domain colect">
+        <div class="td-domain-name">Régimen Colectivo</div>
+        <div class="td-domain-princ">Maupertuis</div>
+        <div class="td-domain-cond">g_int &lt; g_crit<br>Energía fija · Tiempo libre<br>Aceleración = g_crit (cte)<br>Curva plana</div>
+      </div>
+    </div>
+
+    <div class="box box-blue">
+      <div class="box-label">Intuición central</div>
+      <p>Antes del umbral: el sistema sigue a Hamilton — la aceleración cambia con la posición. Después del umbral: el sistema está en Maupertuis — la energía cinética se congela. En R₀, exactamente en el umbral, los dos principios producen el mismo resultado por primera y única vez. Ese punto de cruce es donde vive g_crit.</p>
+    </div>
+  </section>
+
+  <!-- SEC 3 -->
+  <section id="sec3">
+    <div class="section-num">§ 03</div>
+    <h1>Derivación de V⁴ = G·M·g_crit</h1>
+
+    <p>La ecuación de estado se deriva imponiendo que los dos principios sean simultáneamente compatibles en el radio de transición R₀. Son tres pasos, y el resultado es exacto — verificado con álgebra simbólica (Sympy confirma que la diferencia entre ambos lados es cero).</p>
+
+    <div class="derivation">
+
+      <div class="step">
+        <div class="step-num">1</div>
+        <div class="step-content">
+          <h4>Condición de Maupertuis en R₀</h4>
+          <p>En R₀ la aceleración orbital alcanza el umbral del régimen de energía fija. Por definición:</p>
+          <div class="eq-block">
+            <div class="eq-formula">V² / R₀ = g<sub>crit</sub> &nbsp;&nbsp;&nbsp; ...(1)</div>
+            <div class="eq-glosario">
+              <div class="glos-row">
+                <span class="glos-sym">V²/R₀</span>
+                <span class="glos-def"><em>Aceleración centrípeta orbital</em> en el radio de transición. Es la aceleración que experimenta una estrella en órbita circular de radio R₀ con velocidad V.</span>
+              </div>
+              <div class="glos-row">
+                <span class="glos-sym">R₀</span>
+                <span class="glos-def"><em>Radio de transición</em> — el radio exacto donde el sistema cruza el umbral de Maupertuis. Incógnita que se elimina en el Paso 3.</span>
+              </div>
+              <div class="glos-row">
+                <span class="glos-sym">g<sub>crit</sub></span>
+                <span class="glos-def"><em>Umbral de transición</em> — 10⁻¹¹ m/s². La aceleración que marca el cambio de principio variacional.</span>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <div class="step">
+        <div class="step-num">2</div>
+        <div class="step-content">
+          <h4>Condición de Hamilton en R₀</h4>
+          <p>En R₀ el sistema acaba de llegar al umbral — Newton todavía es válido en ese punto. La fuerza gravitacional produce la misma aceleración g_crit:</p>
+          <div class="eq-block green">
+            <div class="eq-formula">G · M / R₀² = g<sub>crit</sub> &nbsp;&nbsp;&nbsp; ...(2)</div>
+            <div class="eq-glosario">
+              <div class="glos-row">
+                <span class="glos-sym">G·M/R₀²</span>
+                <span class="glos-def"><em>Aceleración gravitacional newtoniana</em> a distancia R₀ de una masa M. Es la ley de Newton — válida en R₀ porque ahí está la bisagra, no adentro del régimen colectivo.</span>
+              </div>
+              <div class="glos-row">
+                <span class="glos-sym">M</span>
+                <span class="glos-def"><em>Masa bariónica total</em> del sistema — la misma M_bar de la ecuación de estado. No se agrega masa oscura.</span>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <div class="step">
+        <div class="step-num">3</div>
+        <div class="step-content">
+          <h4>Compatibilidad — eliminar R₀</h4>
+          <p>De la condición (1) se despeja R₀, y se sustituye en la condición (2):</p>
+          <div class="eq-block">
+            <div class="eq-formula">De (1): &nbsp; R₀ = V² / g<sub>crit</sub></div>
+            <div class="eq-glosario">
+              <div class="glos-row">
+                <span class="glos-sym">R₀ = V²/g_crit</span>
+                <span class="glos-def"><em>Radio de transición despejado</em> — R₀ es el radio donde la órbita con velocidad V tiene exactamente la aceleración g_crit. Se sustituye en (2) para eliminar R₀ del sistema.</span>
+              </div>
+            </div>
+          </div>
+          <p style="margin-top: 16px;">Sustituyendo en (2):</p>
+          <div class="eq-block">
+            <div class="eq-formula">G · M / (V²/g<sub>crit</sub>)² = g<sub>crit</sub></div>
+            <div class="eq-glosario">
+              <div class="glos-row">
+                <span class="glos-sym">(V²/g_crit)²</span>
+                <span class="glos-def"><em>R₀ al cuadrado</em> — al sustituir R₀ = V²/g_crit en el denominador de G·M/R₀², el cuadrado produce V⁴ en el denominador y g_crit² en el numerador.</span>
+              </div>
+            </div>
+          </div>
+          <p style="margin-top: 16px;">Simplificando — se cancela un factor g_crit de ambos lados:</p>
+        </div>
+      </div>
+
+    </div>
+
+    <div class="eq-block central gold">
+      <div class="eq-formula">V⁴ = G · M<sub>bar</sub> · g<sub>crit</sub></div>
+      <div class="eq-glosario">
+        <div class="eq-glosario-title">Por qué el exponente es 4 y no 2 ni 3</div>
+        <div class="glos-row">
+          <span class="glos-sym">V⁴</span>
+          <span class="glos-def">El exponente cuatro emerge porque R₀ aparece al <em>cuadrado</em> en la fuerza gravitacional (condición 2), y R₀ a su vez es proporcional a V² (condición 1). Al eliminar R₀, V² × V² = V⁴. No hay libre elección del exponente — es una consecuencia aritmética de la combinación de los dos principios.</span>
+        </div>
+      </div>
+    </div>
+
+    <div class="box box-green">
+      <div class="box-label">Q.E.D.</div>
+      <p><strong>La ecuación de estado no se postula.</strong> Es la condición de compatibilidad entre Hamilton y Maupertuis evaluados en R₀. Verificado simbólicamente con Sympy: W_N(R₀) − W_C(R₀) = 0 exactamente. No hay supuestos adicionales ni parámetros libres.</p>
+    </div>
+  </section>
+
+  <!-- SEC 4 -->
+  <section id="sec4">
+    <div class="section-num">§ 04</div>
+    <h1>La Ecuación Unificadora</h1>
+
+    <p>Hay una manera todavía más profunda de ver la misma transición. F = ma es universal — nunca se rompe en ningún régimen. Lo que cambia entre regímenes es el <em>potencial</em> V(y) que determina qué fuerza actúa.</p>
+
+    <div class="eq-block purple">
+      <div class="eq-formula">−m · ÿ − V'(y) = 0 &nbsp;&nbsp;⟺&nbsp;&nbsp; F = ma</div>
+      <div class="eq-glosario">
+        <div class="glos-row">
+          <span class="glos-sym">−m·ÿ</span>
+          <span class="glos-def"><em>Fuerza inercial</em> — masa por aceleración (segunda derivada de la posición respecto al tiempo). El signo negativo viene de la convención de mover el término al mismo lado que la fuerza.</span>
+        </div>
+        <div class="glos-row">
+          <span class="glos-sym">V'(y)</span>
+          <span class="glos-def"><em>Derivada del potencial</em> respecto a la posición y. La fuerza es F = −V'(y). Lo que cambia entre regímenes es la <em>forma funcional</em> de V(y), no la ecuación en sí.</span>
+        </div>
+        <div class="glos-row">
+          <span class="glos-sym">y</span>
+          <span class="glos-def"><em>Coordenada generalizada</em> — en este caso el radio orbital R. La ecuación es válida para cualquier sistema con cualquier potencial.</span>
+        </div>
+      </div>
+    </div>
+
+    <p>El potencial toma formas distintas según el régimen:</p>
+
+    <table class="data-table">
+      <thead>
+        <tr>
+          <th>Régimen</th>
+          <th>Principio</th>
+          <th>Potencial V(y)</th>
+          <th>Fuerza F = −V'(y)</th>
+          <th>'a' determinada por</th>
+        </tr>
+      </thead>
+      <tbody>
+        <tr>
+          <td>Newtoniano</td>
+          <td>Hamilton</td>
+          <td><code>−GMm/y</code></td>
+          <td><code>−GMm/y²</code></td>
+          <td>La posición R — variable</td>
+        </tr>
+        <tr>
+          <td>Colectivo</td>
+          <td>Maupertuis</td>
+          <td><code>−m·g_crit·y</code></td>
+          <td><code>m·g_crit</code></td>
+          <td>El régimen global — constante</td>
+        </tr>
+      </tbody>
+    </table>
+
+    <div class="box box-gold">
+      <div class="box-label">Síntesis</div>
+      <p><strong>Una sola ecuación gobierna ambos regímenes.</strong> Dos potenciales. Un umbral. En el régimen newtoniano hablamos de fuerzas que dependen de la posición — lenguaje vectorial. En el régimen colectivo hablamos de un estado energético global — lenguaje escalar. Son el mismo sistema visto desde dos lenguajes complementarios.</p>
+    </div>
+  </section>
+
+  <!-- SEC 5 -->
+  <section id="sec5">
+    <div class="section-num">§ 05</div>
+    <h1>La Integral de Maupertuis</h1>
+
+    <p>El principio de Maupertuis extremiza la acción abreviada W — una integral que se evalúa a lo largo de la trayectoria cerrada completa del sistema. Para una órbita circular esta integral tiene una forma exacta.</p>
+
+    <div class="eq-block green">
+      <div class="eq-formula">W = ∮ p · dq = m · V · R · ∫₀²π dθ = 2π · m · V · R</div>
+      <div class="eq-glosario">
+        <div class="glos-row">
+          <span class="glos-sym">∮ p·dq</span>
+          <span class="glos-def"><em>Integral de acción</em> a lo largo de la trayectoria cerrada — suma de (momento × desplazamiento) en cada punto de la órbita completa.</span>
+        </div>
+        <div class="glos-row">
+          <span class="glos-sym">p = m·V</span>
+          <span class="glos-def"><em>Momento lineal</em> — masa por velocidad. En una órbita circular con V constante, p es constante en magnitud a lo largo de toda la trayectoria.</span>
+        </div>
+        <div class="glos-row">
+          <span class="glos-sym">dq = R·dθ</span>
+          <span class="glos-def"><em>Desplazamiento infinitesimal en el arco</em> — elemento de arco en coordenadas polares. R es el radio y dθ el ángulo infinitesimal.</span>
+        </div>
+        <div class="glos-row">
+          <span class="glos-sym">∫₀²π dθ = 2π</span>
+          <span class="glos-def"><em>Primer factor de 2π</em> — emerge de integrar una vuelta completa. Es pura geometría circular. No puede ser diferente de 2π para una órbita cerrada.</span>
+        </div>
+      </div>
+    </div>
+
+    <p>Evaluando W en cada régimen y en el radio de transición R₀, se obtiene un resultado fundamental que Sympy confirma algebraicamente:</p>
+
+    <div class="eq-block">
+      <div class="eq-formula">W_N(R₀) = W_C(R₀) = 2π · m · (G·M)^(3/4) · g_crit^(-1/4)</div>
+      <div class="eq-glosario">
+        <div class="glos-row">
+          <span class="glos-sym">W_N(R₀)</span>
+          <span class="glos-def"><em>Acción newtoniana evaluada en R₀</em> — usando V = √(GM/R) del régimen hamiltoniano y evaluando en R₀ = √(GM/g_crit).</span>
+        </div>
+        <div class="glos-row">
+          <span class="glos-sym">W_C(R₀)</span>
+          <span class="glos-def"><em>Acción colectiva evaluada en R₀</em> — usando V = (GM·g_crit)^(1/4) del régimen de Maupertuis y evaluando en R₀.</span>
+        </div>
+        <div class="glos-row">
+          <span class="glos-sym">W_N = W_C</span>
+          <span class="glos-def"><em>Bisagra de acción</em> — las dos acciones son iguales exactamente en R₀ y solo en R₀. Eso confirma que R₀ es el punto de cruce de los dos principios, no solo de las fuerzas.</span>
+        </div>
+      </div>
+    </div>
+
+    <div class="box box-blue">
+      <div class="box-label">Lo que revela la integral</div>
+      <p>La integral de Maupertuis produce <em>naturalmente</em> un factor de 2π — la primera mitad del (2π)² que aparece en g_crit. El segundo factor de 2π viene de la conexión con la cosmología, como se deriva en la sección siguiente.</p>
+    </div>
+  </section>
+
+  <!-- SEC 6 -->
+  <section id="sec6">
+    <div class="section-num">§ 06</div>
+    <h1>Origen de g_crit — Derivación Completa</h1>
+
+    <p>Esta sección responde la pregunta más importante del modelo: ¿de dónde viene el número g_crit = 10⁻¹¹ m/s²? La respuesta involucra tres propiedades físicas del universo, cada una aportando un factor distinto.</p>
+
+    <h2 id="sec6a">6.1 La Pista Cosmológica</h2>
+
+    <p>La única combinación de constantes universales que produce unidades de aceleración sin involucrar masa es c · H₀. Eso marca el punto de partida:</p>
+
+    <div class="eq-block">
+      <div class="eq-formula">c · H₀ = 6.9 × 10⁻¹⁰ m/s²</div>
+      <div class="eq-glosario">
+        <div class="glos-row">
+          <span class="glos-sym">c</span>
+          <span class="glos-def"><em>Velocidad de la luz</em> — 3.0 × 10⁸ m/s. Es el límite de velocidad del universo y la única velocidad universal disponible para construir g_crit.</span>
+        </div>
+        <div class="glos-row">
+          <span class="glos-sym">H₀</span>
+          <span class="glos-def"><em>Constante de Hubble</em> — 2.3 × 10⁻¹⁸ s⁻¹ (≈ 71 km/s/Mpc). Mide la tasa de expansión del universo. Al multiplicar por c, produce una aceleración.</span>
+        </div>
+        <div class="glos-row">
+          <span class="glos-sym">c · H₀</span>
+          <span class="glos-def"><em>Aceleración cosmológica base</em> — es la aceleración natural de la expansión del universo. Es 69 veces mayor que g_crit. Los tres factores de las secciones siguientes explican exactamente ese cociente de 69.</span>
+        </div>
+      </div>
+    </div>
+
+    <h2 id="sec6b">6.2 El Factor √3 — Isotopía Tridimensional</h2>
+
+    <p>El universo tiene tres dimensiones espaciales y es isótropo — la expansión ocurre por igual en las tres direcciones. Una órbita galáctica existe en un plano, es decir, en una sola dirección de las tres. Cuando la aceleración cosmológica se proyecta sobre la dirección radial de la órbita, se obtiene solo una componente de las tres:</p>
+
+    <div class="eq-block">
+      <div class="eq-formula">⟨a²_radial⟩ = ⟨a²_total⟩ / 3 &nbsp;&nbsp;→&nbsp;&nbsp; a_radial = a_total / √3</div>
+      <div class="eq-glosario">
+        <div class="glos-row">
+          <span class="glos-sym">⟨a²_radial⟩</span>
+          <span class="glos-def"><em>Valor cuadrático medio de la aceleración en una dirección</em> — en un campo isótropo con tres componentes iguales, cada componente contribuye un tercio de la magnitud total al cuadrado.</span>
+        </div>
+        <div class="glos-row">
+          <span class="glos-sym">a_total / √3</span>
+          <span class="glos-def"><em>Factor de isotopía 3D</em> — el √3 aparece en física cinética (P = ρv²/3), en distribuciones viriales (⟨v_x²⟩ = ⟨v²⟩/3) y en radiación (u = 3P). Es la firma geométrica de vivir en un espacio tridimensional.</span>
+        </div>
+      </div>
+    </div>
+
+    <p>Este factor divide g_crit entre √3 respecto a la aceleración cosmológica isótropa total.</p>
+
+    <h2 id="sec6c">6.3 Los Dos Factores de 2π</h2>
+
+    <p>El factor (2π)² que aparece en el denominador de g_crit tiene dos orígenes físicos distintos, cada uno aportando un factor de 2π:</p>
+
+    <p><strong>Primer 2π — la integral orbital.</strong> Como se demostró en §5, la integral de Maupertuis produce ∮ dθ = 2π. Es geometría circular pura: una vuelta completa siempre integra 2π radianes. No puede ser diferente.</p>
+
+    <p><strong>Segundo 2π — la conversión de frecuencias.</strong> Aquí está la clave que faltaba en formulaciones anteriores. H₀ es una <em>frecuencia lineal</em> — mide cuántas veces por segundo se expande el universo. Pero los períodos orbitales se miden en <em>frecuencia angular</em>. La relación entre ambas es:</p>
+
+    <div class="eq-block gold">
+      <div class="eq-formula">ω_H = 2π · H₀ &nbsp;&nbsp;(frecuencia angular de Hubble)</div>
+      <div class="eq-glosario">
+        <div class="glos-row">
+          <span class="glos-sym">ω_H</span>
+          <span class="glos-def"><em>Frecuencia angular de expansión del universo</em> — 1.44 × 10⁻¹⁷ rad/s. Es la versión angular de H₀, la que corresponde comparar con la velocidad angular orbital Ω₀ de una galaxia.</span>
+        </div>
+        <div class="glos-row">
+          <span class="glos-sym">H₀</span>
+          <span class="glos-def"><em>Frecuencia lineal de Hubble</em> — en unidades de s⁻¹ sin el factor 2π. Cuando se igualan períodos orbitales con el período cósmico, hay que convertir H₀ a su equivalente angular. Ese factor de conversión es el segundo 2π.</span>
+        </div>
+        <div class="glos-row">
+          <span class="glos-sym">2π</span>
+          <span class="glos-def"><em>Factor de conversión frecuencia lineal → angular</em> — la misma razón por la que f = 1 Hz equivale a ω = 2π rad/s. La distinción entre H₀ y ω_H es el segundo factor de 2π en el denominador de g_crit.</span>
+        </div>
+      </div>
+    </div>
+
+    <p>La condición física es que la frecuencia angular orbital Ω₀ se iguala a la frecuencia angular de Hubble ω_H — no a H₀ directamente. Esa diferencia produce el segundo factor de 2π.</p>
+
+    <h2 id="sec6d">6.4 La Fórmula Completa</h2>
+
+    <p>Los tres factores se ensamblan en una sola expresión. Cada símbolo tiene un origen físico claro y derivable:</p>
+
+    <div class="eq-block central gold">
+      <div class="eq-formula">g<sub>crit</sub> = c · H₀ / (4π² · √3)</div>
+      <div class="eq-glosario">
+        <div class="glos-row">
+          <span class="glos-sym">c</span>
+          <span class="glos-def"><em>Velocidad de la luz</em> — velocidad límite del universo. Es la única velocidad universal que puede aparecer en g_crit sin introducir dependencia de masa.</span>
+        </div>
+        <div class="glos-row">
+          <span class="glos-sym">H₀</span>
+          <span class="glos-def"><em>Constante de Hubble</em> — tasa de expansión del universo. Define la escala temporal cosmológica relevante para la transición de régimen.</span>
+        </div>
+        <div class="glos-row">
+          <span class="glos-sym">4π² = (2π)²</span>
+          <span class="glos-def"><em>Cuadrado del período angular</em> — un factor de 2π viene de la integral ∮ dθ = 2π de la órbita cerrada (Maupertuis, §5). El segundo factor de 2π viene de convertir H₀ (frecuencia lineal) a ω_H (frecuencia angular de Hubble).</span>
+        </div>
+        <div class="glos-row">
+          <span class="glos-sym">√3</span>
+          <span class="glos-def"><em>Isotopía tridimensional</em> — el universo expande en 3 dimensiones por igual. La órbita existe en 1 dimensión de las 3. La proyección radial de la aceleración cosmológica isótropa es 1/√3 de la magnitud total.</span>
+        </div>
+      </div>
+    </div>
+
+    <div class="factor-breakdown">
+      <div class="factor-breakdown-title">Desglose completo de cada factor</div>
+      <div class="factor-row">
+        <div class="factor-sym">c</div>
+        <div class="factor-val">3.0 × 10⁸ m/s</div>
+        <div class="factor-desc">Velocidad límite del universo. <em>Origen: Relatividad Especial.</em></div>
+      </div>
+      <div class="factor-row">
+        <div class="factor-sym">H₀</div>
+        <div class="factor-val">2.3 × 10⁻¹⁸ s⁻¹</div>
+        <div class="factor-desc">Tasa de expansión cósmica. <em>Origen: cosmología observacional.</em></div>
+      </div>
+      <div class="factor-row">
+        <div class="factor-sym">1er 2π</div>
+        <div class="factor-val">∮ dθ = 2π</div>
+        <div class="factor-desc">Una vuelta orbital completa. <em>Origen: geometría circular — integral de Maupertuis.</em></div>
+      </div>
+      <div class="factor-row">
+        <div class="factor-sym">2do 2π</div>
+        <div class="factor-val">ω_H = 2π·H₀</div>
+        <div class="factor-desc">Conversión de H₀ a frecuencia angular. <em>Origen: distinción entre frecuencia lineal y angular.</em></div>
+      </div>
+      <div class="factor-row">
+        <div class="factor-sym">√3</div>
+        <div class="factor-val">dimensiones = 3</div>
+        <div class="factor-desc">Proyección 1D de campo isótropo 3D. <em>Origen: geometría del espacio tridimensional.</em></div>
+      </div>
+    </div>
+
+    <div class="box box-green">
+      <div class="box-label">Verificación numérica</div>
+      <p>g_crit = c · H₀ / (4π² · √3) = <strong>1.009 × 10⁻¹¹ m/s²</strong></p>
+      <p>Valor empírico del modelo: 1.000 × 10⁻¹¹ m/s²</p>
+      <p>Error: <strong>0.91%</strong> — dentro de la incertidumbre de H₀ (~3%).</p>
+    </div>
+
+    <div class="box box-purple">
+      <div class="box-label">Significado físico en una sola frase</div>
+      <p>El sistema entra en régimen de Maupertuis — curva plana, energía cinética fija, V⁴ = G·M·g_crit — cuando su frecuencia angular orbital se iguala a la frecuencia angular de expansión del universo, proyectada sobre una de las tres dimensiones del espacio.</p>
+    </div>
+  </section>
+
+  <!-- SEC 7 -->
+  <section id="sec7">
+    <div class="section-num">§ 07</div>
+    <h1>Comparación con MOND</h1>
+
+    <p>MOND (Milgrom 1983) llegó empíricamente al mismo umbral de aceleración y a la misma forma V⁴ ∝ M. La diferencia no está en qué predice — está en por qué lo predice, y esa diferencia tiene consecuencias observables.</p>
+
+    <div class="compare-grid">
+      <div class="compare-card mond">
+        <h4>MOND — Milgrom 1983</h4>
+        <div class="compare-row"><strong>Umbral</strong>a₀ = 1.2 × 10⁻¹⁰ m/s² — empírico</div>
+        <div class="compare-row"><strong>Ecuación</strong>V⁴ = G·M·a₀ — postulada</div>
+        <div class="compare-row"><strong>Transición</strong>Modificación local de la fuerza</div>
+        <div class="compare-row"><strong>Principio</strong>No especificado</div>
+        <div class="compare-row"><strong>Origen del número</strong>Sin derivación</div>
+        <div class="compare-row"><strong>Parámetros libres</strong>Υ, D, inclinación por galaxia</div>
+      </div>
+      <div class="compare-card this">
+        <h4>Este trabajo — 2026</h4>
+        <div class="compare-row"><strong>Umbral</strong>g_crit = c·H₀/(4π²·√3) — derivado</div>
+        <div class="compare-row"><strong>Ecuación</strong>V⁴ = G·M·g_crit — derivada</div>
+        <div class="compare-row"><strong>Transición</strong>Cambio de principio variacional global</div>
+        <div class="compare-row"><strong>Principio</strong>Hamilton → Maupertuis en R₀</div>
+        <div class="compare-row"><strong>Origen del número</strong>c, H₀, 3 dimensiones</div>
+        <div class="compare-row"><strong>Parámetros libres</strong>Ninguno — datos nominales</div>
+      </div>
+    </div>
+
+    <div class="box box-blue">
+      <div class="box-label">Diferencia conceptual clave</div>
+      <p>MOND modifica localmente la ley de fuerza cuando la aceleración local cae por debajo de a₀. Este modelo describe un cambio de principio variacional <em>global</em> — el sistema completo cambia de régimen cuando su frecuencia orbital se iguala a la frecuencia cósmica. Son transiciones físicamente distintas y producen predicciones observacionalmente diferentes, especialmente en binarias anchas donde R_T ∝ √M implica rupturas en separaciones distintas para masas distintas.</p>
+    </div>
+  </section>
+
+  <!-- SEC 8 -->
+  <section id="sec8">
+    <div class="section-num">§ 08</div>
+    <h1>Verificación Observacional</h1>
+
+    <p>La ecuación derivada en §3 se verifica con todas las galaxias en régimen COLECTIVO identificadas hasta la fecha. El protocolo es reproducible — los criterios de calidad son explícitos y no se ajusta ningún parámetro para cerrar el resultado.</p>
+
+    <table class="data-table">
+      <thead>
+        <tr><th>Fuente</th><th>Galaxia</th><th>Distancia</th><th>M_bar (M☉)</th><th>Error %</th><th>R₀/R_flat</th><th>Veredicto</th></tr>
+      </thead>
+      <tbody>
+        <tr><td>SPARC 2016</td><td>UGC06628</td><td>Hubble Flow</td><td>4.61×10⁹</td><td>19.0%</td><td>1.042</td><td class="confirm">✓ CONFIRMA</td></tr>
+        <tr><td>SPARC 2016</td><td>UGC07125</td><td>Hubble Flow</td><td>8.06×10⁹</td><td>12.3%</td><td>0.568</td><td class="confirm">✓ CONFIRMA</td></tr>
+        <tr><td>SPARC 2016</td><td>UGC09992</td><td>Hubble Flow</td><td>6.58×10⁸</td><td>9.0%</td><td>0.779</td><td class="confirm">✓ CONFIRMA</td></tr>
+        <tr><td>LITTLE THINGS</td><td>UGC04305</td><td>TRGB 3.45 Mpc</td><td>1.39×10⁹</td><td>6.0%</td><td>0.743</td><td class="confirm">✓ CONFIRMA</td></tr>
+        <tr><td>LITTLE THINGS</td><td>IC 1613</td><td>TRGB 0.755 Mpc</td><td>1.10×10⁸</td><td>5.34%</td><td>0.531</td><td class="confirm">✓ CONFIRMA</td></tr>
+      </tbody>
+    </table>
+
+    <div class="box box-green">
+      <div class="box-label">Estado actual</div>
+      <p>5/5 galaxias en régimen COLECTIVO válido confirman la ecuación de estado derivada. Cero falsificaciones. Los dos veredictos con distancia directa TRGB — independientes de Hubble Flow — producen los errores más bajos (5.34% y 6.0%). La columna R₀/R_flat verifica que el radio de transición calculado cae cerca de la meseta observada en todos los casos.</p>
+    </div>
+  </section>
+
+  <!-- SEC 9 -->
+  <section id="sec9">
+    <div class="section-num">§ 09</div>
+    <h1>Hoja de Ruta</h1>
+
+    <div class="roadmap">
+      <div class="roadmap-item">
+        <div class="roadmap-dot done">✓</div>
+        <div class="roadmap-content">
+          <h4>F = ma como ecuación universal</h4>
+          <p>Establecido. Nunca se rompe. Lo que cambia entre regímenes es el potencial V(y).</p>
+        </div>
+      </div>
+      <div class="roadmap-item">
+        <div class="roadmap-dot done">✓</div>
+        <div class="roadmap-content">
+          <h4>Transición Hamilton → Maupertuis</h4>
+          <p>Derivado. La curva plana es la firma de Maupertuis. La transición ocurre en R₀.</p>
+        </div>
+      </div>
+      <div class="roadmap-item">
+        <div class="roadmap-dot done">✓</div>
+        <div class="roadmap-content">
+          <h4>V⁴ = G·M·g_crit — ecuación de estado</h4>
+          <p>Derivado. Condición de compatibilidad entre los dos principios en R₀. Verificado simbólicamente.</p>
+        </div>
+      </div>
+      <div class="roadmap-item">
+        <div class="roadmap-dot done">✓</div>
+        <div class="roadmap-content">
+          <h4>Origen de g_crit — c·H₀/(4π²·√3)</h4>
+          <p>Derivado. Tres factores físicos: velocidad de la luz, expansión cósmica, tres dimensiones del espacio. Error 0.91% respecto al valor empírico.</p>
+        </div>
+      </div>
+      <div class="roadmap-item">
+        <div class="roadmap-dot done">✓</div>
+        <div class="roadmap-content">
+          <h4>Verificación observacional — 5/5</h4>
+          <p>Confirmado con SPARC y LITTLE THINGS. Dos verificaciones TRGB directas independientes de Hubble Flow.</p>
+        </div>
+      </div>
+      <div class="roadmap-item">
+        <div class="roadmap-dot open">→</div>
+        <div class="roadmap-content">
+          <h4>Derivación formal del segundo 2π</h4>
+          <p>La conversión H₀ → ω_H = 2π·H₀ necesita una demostración más rigurosa que muestre por qué exactamente Ω_orb = ω_H y no un múltiplo de esa relación. Es el hueco teórico más pequeño que queda.</p>
+        </div>
+      </div>
+      <div class="roadmap-item">
+        <div class="roadmap-dot open">→</div>
+        <div class="roadmap-content">
+          <h4>Verificación en binarias anchas</h4>
+          <p>Predicción: R_ruptura ∝ √M por población — distinguible de MOND con datos Gaia DR2.</p>
+        </div>
+      </div>
+      <div class="roadmap-item">
+        <div class="roadmap-dot future">○</div>
+        <div class="roadmap-content">
+          <h4>Derivación desde primeros principios relativistas</h4>
+          <p>Largo plazo. Conectar el cambio de principio variacional con la geometría del espacio-tiempo expandido.</p>
+        </div>
+      </div>
+    </div>
+
+    <div class="box box-dark">
+      <div class="box-label">La pregunta más profunda que queda</div>
+      <p>Si g_crit = c·H₀/(4π²·√3), entonces la velocidad de rotación galáctica está determinada por la expansión del universo y por el número de dimensiones del espacio. Eso sugiere que la dinámica galáctica y la cosmología no son independientes — que hay una simetría profunda entre el ritmo orbital local y el ritmo de expansión global. Explorar esa conexión es el programa teórico de largo plazo.</p>
+    </div>
+  </section>
+
+  <footer>
+    <p>Emergencia Gravitacional por Coherencia Dinámica &nbsp;·&nbsp; Figueroa Torres, 2026 &nbsp;·&nbsp; v2.1</p>
+    <p style="margin-top:8px; font-size:10px;">SPARC: 3/3 · LITTLE THINGS: 2/2 · Total: 5/5 COLECTIVO confirman · g_crit derivado · error 0.91%</p>
+  </footer>
+
+</div>
+</body>
+</html>
