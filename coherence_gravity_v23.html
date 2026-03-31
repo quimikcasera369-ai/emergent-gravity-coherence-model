@@ -1,0 +1,1262 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Coherence Gravity v2.3 — Complete Framework</title>
+<script>
+// MathJax config before load
+window.MathJax = {
+  tex: {
+    inlineMath: [['$','$']],
+    displayMath: [['$$','$$']],
+    packages: {'[+]': ['boldsymbol']}
+  },
+  options: { skipHtmlTags: ['script','noscript','style','textarea'] },
+  startup: { typeset: true }
+};
+</script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/mathjax/3.2.2/es5/tex-chtml.min.js"></script>
+<link href="https://fonts.googleapis.com/css2?family=EB+Garamond:ital,wght@0,400;0,600;1,400&family=JetBrains+Mono:wght@400;600&display=swap" rel="stylesheet">
+
+<style>
+:root {
+  --bg:       #09090b;
+  --surface:  #111114;
+  --border:   #222228;
+  --border2:  #2e2e38;
+  --gold:     #f0c060;
+  --gold2:    #d4955a;
+  --teal:     #38d9a9;
+  --blue:     #74b9ff;
+  --red:      #ff7675;
+  --violet:   #b197fc;
+  --text:     #d4d4e8;
+  --muted:    #555568;
+  --muted2:   #888899;
+  --white:    #f0f0f8;
+}
+
+* { box-sizing: border-box; margin: 0; padding: 0; }
+
+html { scroll-behavior: smooth; }
+
+body {
+  background: var(--bg);
+  color: var(--text);
+  font-family: 'EB Garamond', Georgia, serif;
+  font-size: 17px;
+  line-height: 1.75;
+}
+
+/* ── STARFIELD ── */
+body::before {
+  content: '';
+  position: fixed; inset: 0;
+  background-image:
+    radial-gradient(1px 1px at 10% 15%, rgba(255,255,255,0.12) 0%, transparent 100%),
+    radial-gradient(1px 1px at 30% 70%, rgba(255,255,255,0.08) 0%, transparent 100%),
+    radial-gradient(1px 1px at 55% 25%, rgba(255,255,255,0.10) 0%, transparent 100%),
+    radial-gradient(1px 1px at 75% 55%, rgba(255,255,255,0.07) 0%, transparent 100%),
+    radial-gradient(1px 1px at 85% 85%, rgba(255,255,255,0.09) 0%, transparent 100%),
+    radial-gradient(1px 1px at 92% 10%, rgba(255,255,255,0.06) 0%, transparent 100%);
+  pointer-events: none; z-index: 0;
+}
+
+/* ── LAYOUT ── */
+.page { position: relative; z-index: 1; }
+
+/* ── COVER ── */
+.cover {
+  min-height: 100vh;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  text-align: center;
+  padding: 60px 24px;
+  border-bottom: 1px solid var(--border2);
+  position: relative;
+  overflow: hidden;
+}
+
+.cover::after {
+  content: '';
+  position: absolute;
+  bottom: -1px; left: 0; right: 0;
+  height: 1px;
+  background: linear-gradient(90deg, transparent, var(--gold), transparent);
+}
+
+/* Radial glow behind title */
+.cover-glow {
+  position: absolute;
+  top: 50%; left: 50%;
+  transform: translate(-50%, -55%);
+  width: 600px; height: 400px;
+  background: radial-gradient(ellipse, rgba(240,192,96,0.06) 0%, transparent 70%);
+  pointer-events: none;
+}
+
+.version-tag {
+  font-family: 'JetBrains Mono', monospace;
+  font-size: 11px;
+  letter-spacing: 0.25em;
+  text-transform: uppercase;
+  color: var(--gold);
+  border: 1px solid rgba(240,192,96,0.3);
+  padding: 4px 14px;
+  border-radius: 2px;
+  margin-bottom: 32px;
+  display: inline-block;
+}
+
+.cover-title {
+  font-size: clamp(42px, 8vw, 80px);
+  font-weight: 600;
+  color: var(--white);
+  letter-spacing: -2px;
+  line-height: 1.05;
+  margin-bottom: 8px;
+}
+
+.cover-title em {
+  color: var(--gold);
+  font-style: italic;
+}
+
+.cover-sub {
+  font-size: 20px;
+  color: var(--muted2);
+  font-style: italic;
+  margin-bottom: 40px;
+  letter-spacing: 0.02em;
+}
+
+.cover-meta {
+  font-family: 'JetBrains Mono', monospace;
+  font-size: 12px;
+  color: var(--muted);
+  line-height: 2;
+  letter-spacing: 0.08em;
+}
+
+.cover-meta strong {
+  color: var(--muted2);
+}
+
+/* Status badges */
+.status-row {
+  display: flex;
+  gap: 12px;
+  margin-top: 48px;
+  flex-wrap: wrap;
+  justify-content: center;
+}
+
+.badge {
+  font-family: 'JetBrains Mono', monospace;
+  font-size: 10px;
+  letter-spacing: 0.12em;
+  text-transform: uppercase;
+  padding: 5px 12px;
+  border-radius: 2px;
+  border: 1px solid;
+}
+
+.badge.green  { color: var(--teal);   border-color: rgba(56,217,169,0.4);  background: rgba(56,217,169,0.05);  }
+.badge.gold   { color: var(--gold);   border-color: rgba(240,192,96,0.4);  background: rgba(240,192,96,0.05);  }
+.badge.blue   { color: var(--blue);   border-color: rgba(116,185,255,0.4); background: rgba(116,185,255,0.05); }
+.badge.red    { color: var(--red);    border-color: rgba(255,118,117,0.4); background: rgba(255,118,117,0.05); }
+
+/* ── NAV ── */
+.nav {
+  position: sticky;
+  top: 0;
+  z-index: 100;
+  background: rgba(9,9,11,0.92);
+  backdrop-filter: blur(12px);
+  border-bottom: 1px solid var(--border);
+  padding: 0 32px;
+  display: flex;
+  align-items: center;
+  gap: 0;
+  overflow-x: auto;
+  scrollbar-width: none;
+}
+
+.nav::-webkit-scrollbar { display: none; }
+
+.nav-brand {
+  font-family: 'JetBrains Mono', monospace;
+  font-size: 11px;
+  color: var(--gold);
+  white-space: nowrap;
+  padding: 14px 20px 14px 0;
+  border-right: 1px solid var(--border);
+  margin-right: 8px;
+  letter-spacing: 0.1em;
+}
+
+.nav a {
+  font-family: 'JetBrains Mono', monospace;
+  font-size: 10px;
+  letter-spacing: 0.1em;
+  text-transform: uppercase;
+  color: var(--muted);
+  text-decoration: none;
+  padding: 14px 12px;
+  white-space: nowrap;
+  transition: color 0.2s;
+}
+
+.nav a:hover { color: var(--gold); }
+
+/* ── MAIN CONTENT ── */
+.main {
+  max-width: 900px;
+  margin: 0 auto;
+  padding: 0 32px 100px;
+}
+
+/* ── SECTION ── */
+.section {
+  padding: 64px 0 40px;
+  border-bottom: 1px solid var(--border);
+}
+
+.section:last-child { border-bottom: none; }
+
+.sec-number {
+  font-family: 'JetBrains Mono', monospace;
+  font-size: 10px;
+  letter-spacing: 0.2em;
+  text-transform: uppercase;
+  color: var(--gold);
+  margin-bottom: 10px;
+  display: flex;
+  align-items: center;
+  gap: 12px;
+}
+
+.sec-number::after {
+  content: '';
+  flex: 0 0 48px;
+  height: 1px;
+  background: var(--gold);
+  opacity: 0.4;
+}
+
+.sec-title {
+  font-size: 30px;
+  font-weight: 600;
+  color: var(--white);
+  margin-bottom: 28px;
+  letter-spacing: -0.5px;
+}
+
+.sec-title em { color: var(--gold); font-style: italic; }
+
+/* ── POSTULATE BOX ── */
+.postulate {
+  border: 1px solid rgba(240,192,96,0.5);
+  border-radius: 4px;
+  padding: 28px 36px;
+  background: rgba(240,192,96,0.04);
+  text-align: center;
+  margin: 8px 0;
+  position: relative;
+}
+
+.postulate::before, .postulate::after {
+  content: '';
+  position: absolute;
+  width: 8px; height: 8px;
+  border: 1px solid var(--gold);
+  opacity: 0.6;
+}
+
+.postulate::before { top: 6px; left: 6px; border-right: none; border-bottom: none; }
+.postulate::after  { bottom: 6px; right: 6px; border-left: none; border-top: none; }
+
+.postulate p {
+  font-size: 20px;
+  font-style: italic;
+  color: var(--gold);
+  line-height: 1.5;
+}
+
+/* ── EQUATION BLOCKS ── */
+.eq-block {
+  margin: 16px 0;
+  padding: 16px 24px;
+  background: var(--surface);
+  border: 1px solid var(--border2);
+  border-left: 3px solid var(--gold);
+  border-radius: 0 4px 4px 0;
+  overflow-x: auto;
+}
+
+.eq-block.teal   { border-left-color: var(--teal); }
+.eq-block.blue   { border-left-color: var(--blue); }
+.eq-block.red    { border-left-color: var(--red);  }
+.eq-block.violet { border-left-color: var(--violet); }
+
+.eq-label {
+  font-family: 'JetBrains Mono', monospace;
+  font-size: 10px;
+  letter-spacing: 0.12em;
+  text-transform: uppercase;
+  color: var(--muted);
+  margin-bottom: 8px;
+}
+
+.eq-caption {
+  font-size: 14px;
+  color: var(--muted2);
+  font-style: italic;
+  margin-top: 8px;
+}
+
+/* ── REMARK ── */
+.remark {
+  display: flex;
+  align-items: flex-start;
+  gap: 12px;
+  margin: 16px 0;
+  padding: 12px 18px;
+  background: rgba(56,217,169,0.04);
+  border: 1px solid rgba(56,217,169,0.15);
+  border-radius: 4px;
+  font-size: 15px;
+  color: var(--teal);
+}
+
+.remark.warn {
+  background: rgba(255,118,117,0.04);
+  border-color: rgba(255,118,117,0.2);
+  color: var(--red);
+}
+
+.remark.note {
+  background: rgba(116,185,255,0.04);
+  border-color: rgba(116,185,255,0.15);
+  color: var(--blue);
+}
+
+.remark-icon { flex-shrink: 0; font-size: 14px; margin-top: 2px; }
+
+/* ── TWO-COL ── */
+.two-col {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 16px;
+  margin: 16px 0;
+}
+
+@media (max-width: 640px) { .two-col { grid-template-columns: 1fr; } }
+
+/* ── RESULT CARDS ── */
+.result-card {
+  background: var(--surface);
+  border: 1px solid var(--border2);
+  border-radius: 4px;
+  padding: 20px;
+}
+
+.result-card .rc-label {
+  font-family: 'JetBrains Mono', monospace;
+  font-size: 10px;
+  letter-spacing: 0.15em;
+  text-transform: uppercase;
+  color: var(--gold);
+  margin-bottom: 12px;
+}
+
+/* ── LIMITS TABLE ── */
+.limits-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
+  gap: 12px;
+  margin: 16px 0;
+}
+
+.limit-card {
+  border: 1px solid var(--border2);
+  border-radius: 4px;
+  padding: 16px 18px;
+  background: var(--surface);
+}
+
+.limit-card .lc-label {
+  font-family: 'JetBrains Mono', monospace;
+  font-size: 10px;
+  letter-spacing: 0.15em;
+  text-transform: uppercase;
+  margin-bottom: 10px;
+}
+
+.limit-card.gr     .lc-label { color: var(--teal); }
+.limit-card.desit  .lc-label { color: var(--blue); }
+.limit-card.galax  .lc-label { color: var(--red);  }
+
+/* ── LIMITATIONS ── */
+.lim-table {
+  width: 100%;
+  border-collapse: collapse;
+  font-size: 15px;
+  margin: 16px 0;
+}
+
+.lim-table th {
+  font-family: 'JetBrains Mono', monospace;
+  font-size: 10px;
+  letter-spacing: 0.12em;
+  text-transform: uppercase;
+  color: var(--muted);
+  text-align: left;
+  padding: 8px 16px;
+  border-bottom: 1px solid var(--border2);
+}
+
+.lim-table td {
+  padding: 12px 16px;
+  border-bottom: 1px solid var(--border);
+  vertical-align: top;
+}
+
+.lim-table td:first-child {
+  font-family: 'JetBrains Mono', monospace;
+  font-size: 12px;
+  color: var(--red);
+  white-space: nowrap;
+}
+
+.lim-table td:last-child { color: var(--muted2); font-style: italic; font-size: 15px; }
+
+/* ── OSCILLOSCOPE ── */
+.osc-wrap {
+  border: 1px solid var(--border2);
+  border-radius: 6px;
+  overflow: hidden;
+  margin: 24px 0;
+}
+
+.osc-bar {
+  background: rgba(0,0,0,0.5);
+  padding: 12px 20px;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  border-bottom: 1px solid var(--border);
+  flex-wrap: wrap;
+  gap: 8px;
+}
+
+.osc-bar-title {
+  font-family: 'JetBrains Mono', monospace;
+  font-size: 11px;
+  letter-spacing: 0.1em;
+  color: var(--muted2);
+}
+
+.osc-stats {
+  display: flex;
+  gap: 20px;
+  font-family: 'JetBrains Mono', monospace;
+  font-size: 11px;
+}
+
+.osc-stat { color: var(--muted); }
+.osc-stat b { color: var(--teal); }
+
+.canvas-container {
+  position: relative;
+  background: #050508;
+}
+
+.canvas-container::after {
+  content: '';
+  position: absolute; inset: 0;
+  background: repeating-linear-gradient(0deg, transparent, transparent 3px, rgba(0,0,0,0.06) 3px, rgba(0,0,0,0.06) 4px);
+  pointer-events: none;
+}
+
+#simCanvas {
+  display: block;
+  width: 100%;
+  height: auto;
+}
+
+.osc-controls {
+  padding: 16px 20px;
+  background: rgba(0,0,0,0.3);
+  display: flex;
+  gap: 10px;
+  flex-wrap: wrap;
+  border-top: 1px solid var(--border);
+  align-items: center;
+}
+
+.osc-sliders {
+  padding: 14px 20px 18px;
+  background: rgba(0,0,0,0.2);
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+  gap: 16px;
+  border-top: 1px solid var(--border);
+}
+
+.sl-group label {
+  font-family: 'JetBrains Mono', monospace;
+  font-size: 10px;
+  letter-spacing: 0.1em;
+  text-transform: uppercase;
+  color: var(--muted);
+  display: flex;
+  justify-content: space-between;
+  margin-bottom: 6px;
+}
+
+.sl-group label span { color: var(--teal); }
+
+input[type=range] {
+  width: 100%;
+  -webkit-appearance: none;
+  height: 3px;
+  background: var(--border2);
+  border-radius: 2px;
+  outline: none;
+  cursor: pointer;
+}
+
+input[type=range]::-webkit-slider-thumb {
+  -webkit-appearance: none;
+  width: 13px; height: 13px;
+  border-radius: 50%;
+  background: var(--teal);
+  cursor: pointer;
+  transition: transform 0.15s;
+}
+
+input[type=range]::-webkit-slider-thumb:hover { transform: scale(1.3); }
+
+/* Buttons */
+.btn {
+  font-family: 'JetBrains Mono', monospace;
+  font-size: 10px;
+  letter-spacing: 0.1em;
+  text-transform: uppercase;
+  border: 1px solid var(--border2);
+  background: transparent;
+  color: var(--muted2);
+  padding: 7px 14px;
+  border-radius: 3px;
+  cursor: pointer;
+  transition: all 0.2s;
+}
+
+.btn:hover  { border-color: var(--teal); color: var(--teal); background: rgba(56,217,169,0.05); }
+.btn.active { background: var(--teal); color: #000; border-color: var(--teal); }
+.btn.danger { color: var(--red); border-color: rgba(255,118,117,0.3); }
+.btn.danger:hover { background: rgba(255,118,117,0.08); border-color: var(--red); }
+
+/* ── CLOSURE ── */
+.closure {
+  margin: 40px 0 0;
+  padding: 40px;
+  border: 1px solid rgba(240,192,96,0.2);
+  border-radius: 6px;
+  background: linear-gradient(135deg, rgba(240,192,96,0.03) 0%, rgba(212,149,90,0.03) 100%);
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 32px;
+  align-items: start;
+}
+
+@media (max-width: 600px) { .closure { grid-template-columns: 1fr; } }
+
+.closure-col h3 {
+  font-family: 'JetBrains Mono', monospace;
+  font-size: 11px;
+  letter-spacing: 0.15em;
+  text-transform: uppercase;
+  margin-bottom: 16px;
+}
+
+.closure-col.no h3  { color: var(--red);  }
+.closure-col.yes h3 { color: var(--teal); }
+
+.closure-item {
+  display: flex;
+  align-items: baseline;
+  gap: 10px;
+  padding: 6px 0;
+  font-size: 16px;
+  color: var(--muted2);
+  border-bottom: 1px solid var(--border);
+}
+
+.closure-item:last-child { border-bottom: none; }
+.closure-item .ci-icon { font-size: 13px; flex-shrink: 0; }
+
+/* ── FOOTER ── */
+.footer {
+  max-width: 900px;
+  margin: 0 auto;
+  padding: 32px;
+  border-top: 1px solid var(--border);
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  flex-wrap: wrap;
+  gap: 12px;
+}
+
+.footer-left {
+  font-family: 'JetBrains Mono', monospace;
+  font-size: 11px;
+  color: var(--muted);
+  line-height: 2;
+}
+
+.footer-right {
+  font-family: 'JetBrains Mono', monospace;
+  font-size: 12px;
+  color: var(--gold);
+  text-align: right;
+}
+
+/* ── MathJax overrides ── */
+mjx-container { overflow-x: auto; }
+
+p { margin-bottom: 14px; }
+p:last-child { margin-bottom: 0; }
+</style>
+</head>
+<body>
+<div class="page">
+
+<!-- ════════════════════════════════════════════
+     COVER
+════════════════════════════════════════════ -->
+<div class="cover" id="top">
+  <div class="cover-glow"></div>
+
+  <div class="version-tag">v 2.3 — Framework Completo</div>
+
+  <h1 class="cover-title">Coherence<br><em>Gravity</em></h1>
+  <p class="cover-sub">Geometría emergente desde dinámica de coherencia</p>
+
+  <div class="cover-meta">
+    <strong>Juan Pablo Figueroa Torres</strong><br>
+    Guadalajara, Jalisco, México · 29 / 03 / 2026
+  </div>
+
+  <div class="status-row">
+    <span class="badge green">Coherente</span>
+    <span class="badge gold">Derivada</span>
+    <span class="badge blue">Falsable</span>
+    <span class="badge green">Simulable</span>
+    <span class="badge red">No definitiva</span>
+  </div>
+</div>
+
+<!-- ════════════════════════════════════════════
+     NAV
+════════════════════════════════════════════ -->
+<nav class="nav">
+  <div class="nav-brand">CG · v2.3</div>
+  <a href="#postulado">1 · Postulado</a>
+  <a href="#dinamica">2 · Dinámica</a>
+  <a href="#metrica">3 · Métrica</a>
+  <a href="#curvatura">4 · Curvatura</a>
+  <a href="#cierre">5 · Cierre</a>
+  <a href="#einstein">6 · Einstein</a>
+  <a href="#campo">7 · Campo</a>
+  <a href="#poisson">8 · Poisson</a>
+  <a href="#resultados">9 · Resultados</a>
+  <a href="#predicciones">10 · Predicciones</a>
+  <a href="#limites">11 · Límites</a>
+  <a href="#limitaciones">12 · Limitaciones</a>
+  <a href="#sim">Simulación</a>
+</nav>
+
+<!-- ════════════════════════════════════════════
+     MAIN
+════════════════════════════════════════════ -->
+<div class="main">
+
+<!-- §1 POSTULADO -->
+<section class="section" id="postulado">
+  <div class="sec-number">§ 1</div>
+  <h2 class="sec-title">Postulado <em>Fundamental</em></h2>
+
+  <div class="postulate">
+    <p>La geometría del espacio-tiempo es la ley de propagación<br>
+       de un campo en un medio no homogéneo.</p>
+  </div>
+
+  <p style="margin-top:20px; color:var(--muted2); font-style:italic; font-size:15px;">
+    No se postula una métrica ni una acción. La geometría es secundaria —
+    emerge de la dinámica de coherencia del campo $K_{ef}(x)$.
+  </p>
+</section>
+
+<!-- §2 DINÁMICA BASE -->
+<section class="section" id="dinamica">
+  <div class="sec-number">§ 2</div>
+  <h2 class="sec-title">Dinámica <em>Base</em></h2>
+
+  <div class="eq-block">
+    <div class="eq-label">Ecuación de onda generalizada</div>
+    $$\partial_t^2\, x \;-\; \nabla \cdot \!\left(c_{eff}^2(x)\,\nabla x\right) = 0$$
+  </div>
+
+  <div class="eq-block teal">
+    <div class="eq-label">Velocidad efectiva</div>
+    $$c_{eff}^2(x) = \frac{c^2}{K_{ef}(x)}$$
+    <div class="eq-caption">$K_{ef}$ es el campo de coherencia — la única variable fundamental.</div>
+  </div>
+
+  <div class="remark">
+    <span class="remark-icon">→</span>
+    Cuando $K_{ef} = \text{const}$, recuperamos la ecuación de onda estándar. La inhomogeneidad de $K_{ef}$ genera toda la física gravitacional.
+  </div>
+</section>
+
+<!-- §3 MÉTRICA -->
+<section class="section" id="metrica">
+  <div class="sec-number">§ 3</div>
+  <h2 class="sec-title">Métrica <em>Efectiva</em></h2>
+
+  <div class="eq-block blue">
+    <div class="eq-label">Elemento de línea emergente</div>
+    $$ds^2 = -c_{eff}^2(x)\,dt^2 + dx^2$$
+  </div>
+
+  <div class="remark note">
+    <span class="remark-icon">→</span>
+    La métrica no se postula. Es la consecuencia geométrica directa de la propagación del campo en el medio $K_{ef}$.
+  </div>
+</section>
+
+<!-- §4 CURVATURA -->
+<section class="section" id="curvatura">
+  <div class="sec-number">§ 4</div>
+  <h2 class="sec-title">Curvatura <em>Efectiva</em></h2>
+
+  <div class="eq-block">
+    <div class="eq-label">Escalar de Ricci efectivo</div>
+    $$R_{eff} \;\sim\; \nabla^2 \ln K_{ef}$$
+    <div class="eq-caption">La curvatura es el laplaciano logarítmico del campo de coherencia.</div>
+  </div>
+</section>
+
+<!-- §5 CIERRE COSMOLÓGICO -->
+<section class="section" id="cierre">
+  <div class="sec-number">§ 5</div>
+  <h2 class="sec-title">Cierre <em>Cosmológico</em></h2>
+
+  <div class="two-col">
+    <div class="eq-block">
+      <div class="eq-label">Aceleración crítica (z-dependiente)</div>
+      $$g_{crit} \sim c_{eff}\, H(z)$$
+    </div>
+    <div class="eq-block teal">
+      <div class="eq-label">Constante cosmológica emergente</div>
+      $$\Lambda = \frac{H_0^2}{c^2}$$
+    </div>
+  </div>
+
+  <div class="remark note">
+    <span class="remark-icon">→</span>
+    En $z=0$: $g_{crit} = cH_0/(4\pi^2\sqrt{3}) \approx 9.58 \times 10^{-12}$ m/s². Derivado sin parámetros libres desde el vacío de Bunch-Davies (Paper IV).
+  </div>
+</section>
+
+<!-- §6 EINSTEIN -->
+<section class="section" id="einstein">
+  <div class="sec-number">§ 6</div>
+  <h2 class="sec-title">Ecuación de Einstein <em>Efectiva</em></h2>
+
+  <div class="eq-block red">
+    <div class="eq-label">Campo gravitacional efectivo completo</div>
+    $$G_{eff\,\mu\nu}
+      \;+\;
+      \left(\frac{H_0}{c}\right)^{\!2} g_{eff\,\mu\nu}
+      \;=\;
+      8\pi G\,T_{eff\,\mu\nu}
+      \;+\;
+      \mathcal{K}_{\mu\nu}$$
+  </div>
+
+  <div class="eq-block violet">
+    <div class="eq-label">Tensor de coherencia $\mathcal{K}_{\mu\nu}$</div>
+    $$\mathcal{K}_{\mu\nu}
+      =
+      \frac{1}{K_{ef}}\!\left(\nabla_\mu\nabla_\nu K_{ef}
+      - g_{\mu\nu}\,\Box K_{ef}\right)
+      +
+      \frac{7}{2K_{ef}^2}
+      \left(\nabla_\mu K_{ef}\,\nabla_\nu K_{ef}
+      - \tfrac{1}{4}\,g_{\mu\nu}(\nabla K_{ef})^2\right)$$
+    <div class="eq-caption">Reemplaza la materia oscura. Emergente desde la inhomogeneidad de $K_{ef}$.</div>
+  </div>
+
+  <div class="remark warn">
+    <span class="remark-icon">⚠</span>
+    El coeficiente $7/2$ en $\mathcal{K}_{\mu\nu}$ requiere validación completa — marcado como L2 en Paper IV.
+  </div>
+</section>
+
+<!-- §7 CAMPO -->
+<section class="section" id="campo">
+  <div class="sec-number">§ 7</div>
+  <h2 class="sec-title">Ecuación del Campo <em>de Coherencia</em></h2>
+
+  <div class="eq-block">
+    <div class="eq-label">Ecuación dinámica de $K_{ef}$</div>
+    $$6\,\Box K_{ef}
+      \;=\;
+      8\pi G\,T^\mu_{\ \mu}
+      \;-\;
+      8\left(\frac{H_0}{c}\right)^{\!2} K_{ef}
+      \;+\;
+      \frac{R_{eff}}{K_{ef}}$$
+    <div class="eq-caption">$K_{ef}$ se acopla a la traza del tensor energía-momento y a la propia curvatura.</div>
+  </div>
+</section>
+
+<!-- §8 POISSON -->
+<section class="section" id="poisson">
+  <div class="sec-number">§ 8</div>
+  <h2 class="sec-title">Límite Débil — <em>Poisson Modificado</em></h2>
+
+  <div class="eq-block teal">
+    <div class="eq-label">ANCLA 2.3 — Ecuación de Poisson no-lineal</div>
+    $$\nabla \cdot \!\left(K_{ef}^{1/2}\,\nabla \Phi\right)
+      \;=\;
+      \frac{4\pi G}{g_{crit}^{1/2}}\,\rho$$
+    <div class="eq-caption">Régimen colectivo ($g \ll g_{crit}$): la fuente gravitacional es la densidad bariónica ordinaria.</div>
+  </div>
+</section>
+
+<!-- §9 RESULTADOS -->
+<section class="section" id="resultados">
+  <div class="sec-number">§ 9</div>
+  <h2 class="sec-title">Resultados <em>Derivados</em></h2>
+
+  <div class="two-col">
+    <div class="result-card">
+      <div class="rc-label">BTFR — Régimen colectivo</div>
+      $$V^4 = G M\, g_{crit}$$
+      <p style="font-size:14px; color:var(--muted2); font-style:italic; margin-top:10px;">
+        Relación de Tully-Fisher bariónica como consecuencia topológica del horizonte $S^3$.
+      </p>
+    </div>
+
+    <div class="result-card">
+      <div class="rc-label">Masa efectiva</div>
+      $$M_{eff}(r) = \frac{V^2 r^2}{G c^2}$$
+    </div>
+
+    <div class="result-card" style="grid-column: 1 / -1;">
+      <div class="rc-label">Longitud de coherencia</div>
+      $$\xi = \frac{\sqrt{3}}{2}\frac{c}{H_0}$$
+      <p style="font-size:14px; color:var(--muted2); font-style:italic; margin-top:10px;">
+        Escala característica de transición régimen Hamiltoniano → colectivo. El $\sqrt{3}$ proviene de la cota de Vitali: $1 \le \sum\lambda(V) \le 3$, media geométrica $= \sqrt{3}$.
+      </p>
+    </div>
+  </div>
+</section>
+
+<!-- §10 PREDICCIONES -->
+<section class="section" id="predicciones">
+  <div class="sec-number">§ 10</div>
+  <h2 class="sec-title">Predicciones <em>Clave</em></h2>
+
+  <div class="eq-block red">
+    <div class="eq-label">Predicción 1 — Evolución BTFR (JWST + ELT)</div>
+    $$\Delta \log V(z)
+      \;=\;
+      \frac{1}{4}\log\!\left(\frac{H(z)}{H_0}\right)$$
+    <div class="eq-caption">Corrimiento de $+0.120$ dex en velocidad a $z=2$. Universal en $M_{bar}$ (la masa cancela). Enviado a RMxAA como Paper #7576.</div>
+  </div>
+
+  <div class="eq-block blue">
+    <div class="eq-label">Predicción 2 — Escala radial de transición</div>
+    $$\frac{r_{trans}(z)}{r_{trans}(0)} = \frac{H_0}{H(z)}$$
+    <div class="eq-caption">La escala de transición se comprime con el redshift como el horizonte de Hubble.</div>
+  </div>
+
+  <div class="remark note">
+    <span class="remark-icon">→</span>
+    Dos transiciones de redshift: $z^\star \approx 0.3$ (el universo cruzó mayoría colectivo → Hamiltoniano) y $z^\star \approx 3.2$ (galaxias de disco masivo salieron del régimen colectivo).
+  </div>
+</section>
+
+<!-- §11 LÍMITES -->
+<section class="section" id="limites">
+  <div class="sec-number">§ 11</div>
+  <h2 class="sec-title">Límites <em>de la Teoría</em></h2>
+
+  <div class="limits-grid">
+    <div class="limit-card gr">
+      <div class="lc-label">Límite GR</div>
+      $$K_{ef} \to \infty$$
+      $$\Rightarrow\; \mathcal{K}_{\mu\nu} \to 0$$
+      <p style="font-size:14px; color:var(--muted2); margin-top:8px; font-style:italic;">Recuperamos Relatividad General estándar.</p>
+    </div>
+    <div class="limit-card desit">
+      <div class="lc-label">Límite De Sitter</div>
+      $$\nabla K_{ef} = 0$$
+      <p style="font-size:14px; color:var(--muted2); margin-top:8px; font-style:italic;">Campo homogéneo: espacio-tiempo de De Sitter puro.</p>
+    </div>
+    <div class="limit-card galax">
+      <div class="lc-label">Régimen Galáctico</div>
+      $$\nabla K_{ef} \neq 0$$
+      $$\Rightarrow\; M_{eff}(r)$$
+      <p style="font-size:14px; color:var(--muted2); margin-top:8px; font-style:italic;">Inhomogeneidad genera masa efectiva. Sin materia oscura.</p>
+    </div>
+  </div>
+</section>
+
+<!-- §12 LIMITACIONES -->
+<section class="section" id="limitaciones">
+  <div class="sec-number">§ 12</div>
+  <h2 class="sec-title">Limitaciones <em>Honestas</em></h2>
+
+  <table class="lim-table">
+    <thead>
+      <tr>
+        <th>ID</th>
+        <th>Problema abierto</th>
+        <th>Estado</th>
+      </tr>
+    </thead>
+    <tbody>
+      <tr>
+        <td>L1</td>
+        <td>Operador de Lindblad — no derivado desde QFT en espacio-tiempo curvo</td>
+        <td>pendiente</td>
+      </tr>
+      <tr>
+        <td>L2</td>
+        <td>Coeficiente $7/2$ en $\mathcal{K}_{\mu\nu}$ — requiere validación completa de la función interpolante</td>
+        <td>parcial</td>
+      </tr>
+      <tr>
+        <td>L3</td>
+        <td>Lentes gravitacionales — derivación explícita no realizada</td>
+        <td>pendiente</td>
+      </tr>
+      <tr>
+        <td>L4</td>
+        <td>Acción FLRW covariante — no derivada</td>
+        <td>pendiente</td>
+      </tr>
+      <tr>
+        <td>L5</td>
+        <td>Cosmología CMB — no derivada aún</td>
+        <td>pendiente</td>
+      </tr>
+      <tr>
+        <td>L6</td>
+        <td>Estabilidad formal de $K_{ef}$ — no probada</td>
+        <td>pendiente</td>
+      </tr>
+      <tr>
+        <td>L7</td>
+        <td>Kernel de calor (heat kernel) — cálculo completo faltante</td>
+        <td>pendiente</td>
+      </tr>
+    </tbody>
+  </table>
+
+  <div class="remark warn">
+    <span class="remark-icon">⚠</span>
+    Ninguna de estas limitaciones afecta la validez del resultado BTFR ni la derivación de $g_{crit}$ en el régimen galáctico. Son fronteras abiertas, no contradicciones internas.
+  </div>
+</section>
+
+<!-- §SIM SIMULACIÓN -->
+<section class="section" id="sim">
+  <div class="sec-number">Simulación</div>
+  <h2 class="sec-title">Propagación de Onda — <em>ANCLA 2.1</em></h2>
+
+  <p style="color:var(--muted2); font-style:italic; margin-bottom:20px; font-size:15px;">
+    Solución numérica discreta de $\partial_t^2 x = c_{eff}^2 \nabla^2 x$
+    con $c_{eff}^2 = c^2/K_{ef}$. La zona sombreada es la región de $K_{ef} \ne 1$.
+  </p>
+
+  <div class="osc-wrap">
+    <div class="osc-bar">
+      <span class="osc-bar-title">Wave propagation — 1D coherence field</span>
+      <div class="osc-stats">
+        <span class="osc-stat">K_ef zone: <b id="st-kef">0.30</b></span>
+        <span class="osc-stat">γ damp: <b id="st-damp">0.000</b></span>
+        <span class="osc-stat">|x|_max: <b id="st-amp">0.000</b></span>
+      </div>
+    </div>
+
+    <div class="canvas-container">
+      <canvas id="simCanvas" width="860" height="240"></canvas>
+    </div>
+
+    <div class="osc-controls">
+      <button class="btn" onclick="firePulse()">Fire Pulse</button>
+      <button class="btn" onclick="fireDouble()">Double Pulse</button>
+      <button class="btn" id="btnCont" onclick="toggleCont()">Continuous</button>
+      <button class="btn danger" onclick="resetSim()">Reset</button>
+      <button class="btn" id="btnPause" onclick="togglePause()">Pause</button>
+    </div>
+
+    <div class="osc-sliders">
+      <div class="sl-group">
+        <label>K_ef (zona curva) <span id="lbl-kef">0.30</span></label>
+        <input type="range" min="0.05" max="2.5" step="0.05" value="0.30"
+               oninput="setKef(this.value)">
+      </div>
+      <div class="sl-group">
+        <label>Ancho zona <span id="lbl-zone">40</span></label>
+        <input type="range" min="5" max="140" step="5" value="40"
+               oninput="setZone(this.value)">
+      </div>
+      <div class="sl-group">
+        <label>Amortiguamiento γ <span id="lbl-damp">0.000</span></label>
+        <input type="range" min="0" max="0.05" step="0.001" value="0"
+               oninput="setDamp(this.value)">
+      </div>
+      <div class="sl-group">
+        <label>Amplitud pulso <span id="lbl-pamp">1.0</span></label>
+        <input type="range" min="0.2" max="3.0" step="0.1" value="1.0"
+               oninput="document.getElementById('lbl-pamp').textContent=parseFloat(this.value).toFixed(1); pulseAmp=parseFloat(this.value);">
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ════════════════════════════════════════════
+     CIERRE
+════════════════════════════════════════════ -->
+<div class="closure">
+  <div class="closure-col no">
+    <h3>No es</h3>
+    <div class="closure-item"><span class="ci-icon" style="color:var(--red)">✕</span> Teoría definitiva</div>
+    <div class="closure-item"><span class="ci-icon" style="color:var(--red)">✕</span> Completamente validada</div>
+    <div class="closure-item"><span class="ci-icon" style="color:var(--red)">✕</span> Cosmología completa</div>
+    <div class="closure-item"><span class="ci-icon" style="color:var(--red)">✕</span> Sin problemas abiertos</div>
+  </div>
+  <div class="closure-col yes">
+    <h3>Sí es</h3>
+    <div class="closure-item"><span class="ci-icon" style="color:var(--teal)">✓</span> Internamente coherente</div>
+    <div class="closure-item"><span class="ci-icon" style="color:var(--teal)">✓</span> Derivada (sin parámetros libres)</div>
+    <div class="closure-item"><span class="ci-icon" style="color:var(--teal)">✓</span> Falsable (JWST, ELT)</div>
+    <div class="closure-item"><span class="ci-icon" style="color:var(--teal)">✓</span> Simulable</div>
+    <div class="closure-item"><span class="ci-icon" style="color:var(--teal)">✓</span> Una teoría gravitacional efectiva cerrada</div>
+  </div>
+</div>
+
+</div><!-- /main -->
+
+<!-- FOOTER -->
+<footer class="footer">
+  <div class="footer-left">
+    Coherence Gravity · Framework v2.3<br>
+    Juan Pablo Figueroa Torres · Guadalajara, Jalisco · 2026
+  </div>
+  <div class="footer-right">
+    $g_{crit} = \dfrac{cH_0}{4\pi^2\!\sqrt{3}} \approx 9.58\times10^{-12}\ \text{m/s}^2$
+  </div>
+</footer>
+
+</div><!-- /page -->
+
+<!-- ════════════════════════════════════════════
+     SIMULATION ENGINE
+════════════════════════════════════════════ -->
+<script>
+const canvas = document.getElementById('simCanvas');
+const ctx    = canvas.getContext('2d');
+const W = canvas.width, H = canvas.height;
+const N = 200;
+
+let xField = new Float64Array(N);
+let vField = new Float64Array(N);
+let Kef    = new Float64Array(N).fill(1);
+
+let kefVal  = 0.30;
+let zoneW   = 40;
+let damp    = 0.0;
+let pulseAmp = 1.0;
+let paused  = false;
+let contMode = false;
+let contPhase = 0;
+
+const CENTER = 100;
+
+function buildKef() {
+  Kef.fill(1);
+  const h = Math.floor(zoneW / 2);
+  for (let i = CENTER - h; i < CENTER + h; i++) {
+    if (i >= 0 && i < N) Kef[i] = kefVal;
+  }
+}
+
+function resetSim() {
+  xField.fill(0); vField.fill(0);
+  contPhase = 0; contMode = false;
+  document.getElementById('btnCont').classList.remove('active');
+}
+
+function firePulse(pos, amp) {
+  pos = (pos === undefined) ? 30 : pos;
+  amp = (amp === undefined) ? pulseAmp : amp;
+  const sigma = 3;
+  for (let i = 0; i < N; i++) {
+    xField[i] += amp * Math.exp(-((i - pos) ** 2) / (2 * sigma * sigma));
+  }
+}
+
+function fireDouble() {
+  firePulse(25, pulseAmp);
+  firePulse(50, pulseAmp * 0.65);
+}
+
+function toggleCont() {
+  contMode = !contMode;
+  document.getElementById('btnCont').classList.toggle('active', contMode);
+}
+
+function togglePause() {
+  paused = !paused;
+  const b = document.getElementById('btnPause');
+  b.textContent = paused ? 'Resume' : 'Pause';
+  b.classList.toggle('active', paused);
+  if (!paused) requestAnimationFrame(loop);
+}
+
+function setKef(v)  { kefVal = parseFloat(v); document.getElementById('lbl-kef').textContent = kefVal.toFixed(2); document.getElementById('st-kef').textContent = kefVal.toFixed(2); buildKef(); }
+function setZone(v) { zoneW  = parseInt(v);   document.getElementById('lbl-zone').textContent = zoneW; buildKef(); }
+function setDamp(v) { damp   = parseFloat(v); document.getElementById('lbl-damp').textContent = damp.toFixed(3); document.getElementById('st-damp').textContent = damp.toFixed(3); }
+
+buildKef();
+firePulse(25, 1.0);
+
+function step() {
+  const dt = 0.10;
+  const nx = new Float64Array(xField);
+
+  if (contMode) {
+    contPhase += 0.18;
+    xField[5] += pulseAmp * 0.12 * Math.sin(contPhase);
+  }
+
+  for (let i = 1; i < N - 1; i++) {
+    const c2  = 1.0 / Kef[i];
+    const lap = xField[i+1] + xField[i-1] - 2 * xField[i];
+    vField[i] = vField[i] * (1 - damp) + c2 * lap * dt;
+    nx[i]     = xField[i] + vField[i] * dt;
+  }
+
+  // Absorbing ends
+  nx[0]   = nx[1]   * 0.4; vField[0]   *= 0.4;
+  nx[N-1] = nx[N-2] * 0.4; vField[N-1] *= 0.4;
+
+  xField = nx;
+}
+
+function draw() {
+  ctx.clearRect(0, 0, W, H);
+
+  // BG
+  ctx.fillStyle = '#050508';
+  ctx.fillRect(0, 0, W, H);
+
+  // Grid lines
+  ctx.strokeStyle = 'rgba(30,34,50,0.7)';
+  ctx.lineWidth = 1;
+  for (let gx = 0; gx <= W; gx += W/8) {
+    ctx.beginPath(); ctx.moveTo(gx, 0); ctx.lineTo(gx, H); ctx.stroke();
+  }
+  for (let gy = 0; gy <= H; gy += H/4) {
+    ctx.beginPath(); ctx.moveTo(0, gy); ctx.lineTo(W, gy); ctx.stroke();
+  }
+
+  // Zero line
+  ctx.strokeStyle = 'rgba(255,255,255,0.05)';
+  ctx.lineWidth = 1;
+  ctx.beginPath(); ctx.moveTo(0, H/2); ctx.lineTo(W, H/2); ctx.stroke();
+
+  const h = Math.floor(zoneW / 2);
+  const zs = (CENTER - h) / N * W;
+  const ze = (CENTER + h) / N * W;
+
+  // Zone shading
+  ctx.fillStyle = 'rgba(240,192,96,0.04)';
+  ctx.fillRect(zs, 0, ze - zs, H);
+
+  ctx.setLineDash([4, 5]);
+  ctx.strokeStyle = 'rgba(240,192,96,0.3)';
+  ctx.lineWidth = 1;
+  ctx.beginPath(); ctx.moveTo(zs, 0); ctx.lineTo(zs, H); ctx.stroke();
+  ctx.beginPath(); ctx.moveTo(ze, 0); ctx.lineTo(ze, H); ctx.stroke();
+  ctx.setLineDash([]);
+
+  // Kef envelope (violet)
+  ctx.beginPath();
+  ctx.strokeStyle = 'rgba(177,151,252,0.35)';
+  ctx.lineWidth = 1.5;
+  for (let i = 0; i < N; i++) {
+    const px  = i / N * W;
+    const kn  = Math.min(Math.max((Kef[i] - 0.05) / 2.45, 0), 1);
+    const py  = H * 0.10 + (1 - kn) * H * 0.09;
+    i === 0 ? ctx.moveTo(px, py) : ctx.lineTo(px, py);
+  }
+  ctx.stroke();
+
+  // Wave gradient
+  const grad = ctx.createLinearGradient(0, 0, W, 0);
+  grad.addColorStop(0,   'rgba(56,217,169,0.25)');
+  grad.addColorStop(0.5, 'rgba(56,217,169,1.0)');
+  grad.addColorStop(1,   'rgba(56,217,169,0.25)');
+
+  ctx.beginPath();
+  ctx.strokeStyle = grad;
+  ctx.lineWidth = 2;
+  ctx.shadowColor = 'rgba(56,217,169,0.4)';
+  ctx.shadowBlur  = 10;
+
+  let mx = 0;
+  for (let i = 0; i < N; i++) {
+    const px = i / N * W;
+    const py = H / 2 - xField[i] * 75;
+    i === 0 ? ctx.moveTo(px, py) : ctx.lineTo(px, py);
+    if (Math.abs(xField[i]) > mx) mx = Math.abs(xField[i]);
+  }
+  ctx.stroke();
+  ctx.shadowBlur = 0;
+
+  // Zone label
+  ctx.fillStyle = 'rgba(240,192,96,0.75)';
+  ctx.font = '10px JetBrains Mono, monospace';
+  ctx.textAlign = 'center';
+  ctx.fillText(`K_ef = ${kefVal.toFixed(2)}`, (zs + ze) / 2, 13);
+  ctx.textAlign = 'left';
+
+  document.getElementById('st-amp').textContent = mx.toFixed(3);
+}
+
+function loop() {
+  if (!paused) {
+    step(); step();
+    draw();
+    requestAnimationFrame(loop);
+  }
+}
+
+loop();
+</script>
+</body>
+</html>
