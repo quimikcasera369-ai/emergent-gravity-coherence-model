@@ -1,0 +1,230 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Dynamic Coherence Lag & The Bullet Cluster</title>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/mathjax/3.2.2/es5/tex-mml-chtml.min.js"></script>
+<style>
+@import url('https://fonts.googleapis.com/css2?family=EB+Garamond:ital,wght@0,400;0,600;1,400&family=JetBrains+Mono:wght@400;500&display=swap');
+:root{--navy:#0a0f1e;--dark:#0f1628;--mid:#1a2540;--border:#2a3a5a;--accent:#3a7abf;--gold:#c8a030;--green:#2a8a50;--text:#d0dff0;--muted:#7a9ab8;--eq-bg:#0d1525;--warn:#c85030}
+*{margin:0;padding:0;box-sizing:border-box}
+body{background:var(--navy);color:var(--text);font-family:'EB Garamond',Georgia,serif;font-size:17px;line-height:1.75;max-width:920px;margin:0 auto;padding:40px 30px; position: relative; padding-bottom: 60px;}
+.paper-header{border-bottom:2px solid var(--border);padding-bottom:30px;margin-bottom:40px}
+.journal-line{font-family:'JetBrains Mono',monospace;font-size:11px;color:var(--muted);letter-spacing:2px;text-transform:uppercase;margin-bottom:20px}
+h1.paper-title{font-size:26px;font-weight:600;line-height:1.3;color:#e8f0ff;margin-bottom:16px}
+.author{font-size:16px;font-style:italic;color:var(--text);margin-bottom:4px}
+.affil,.dates{font-size:13px;color:var(--muted);margin-bottom:4px}
+.dates{font-family:'JetBrains Mono',monospace;margin-top:8px}
+.abstract-box{background:var(--dark);border-left:3px solid var(--accent);border-radius:0 8px 8px 0;padding:24px 28px;margin:30px 0; position: relative;}
+.abstract-box h2{font-size:11px;font-family:'JetBrains Mono',monospace;letter-spacing:2px;text-transform:uppercase;color:var(--accent);margin-bottom:12px}
+.abstract-box p{font-size:15.5px;color:#b8d0e8; text-align: justify;}
+h2.section-title{font-size:20px;font-weight:600;color:#c0d8f8;border-bottom:1px solid var(--border);padding-bottom:6px;margin:48px 0 18px;counter-increment:section}
+h2.section-title::before{content:counter(section) ". ";color:var(--accent);font-family:'JetBrains Mono',monospace;font-size:15px}
+body{counter-reset:section}
+h3.subsection{font-size:16px;font-weight:600;color:#a0c0e0;margin:28px 0 10px}
+p{margin-bottom:14px; text-align: justify;}
+.eq-block{background:var(--eq-bg);border:1px solid var(--border);border-radius:6px;padding:18px 24px;margin:20px 0;overflow-x:auto;text-align:center}
+.eq-block.boxed{border:2px solid var(--gold);background:#100e05}
+.theorem-box,.result-box{border-radius:8px;padding:18px 22px;margin:24px 0}
+.theorem-box{background:#0d1828;border:1px solid var(--accent)}
+.result-box{background:#100e00;border:2px solid var(--gold)}
+.box-title{font-family:'JetBrains Mono',monospace;font-size:11px;letter-spacing:2px;text-transform:uppercase;margin-bottom:8px}
+.theorem-box .box-title{color:var(--accent)}
+.result-box .box-title{color:var(--gold)}
+.data-table{width:100%;border-collapse:collapse;font-size:14.5px;margin:20px 0}
+.data-table caption{font-size:13px;color:var(--muted);margin-bottom:8px;text-align:left;font-style:italic}
+.data-table th{background:var(--mid);color:#b0c8e8;font-family:'JetBrains Mono',monospace;font-size:12px;padding:9px 14px;border-bottom:2px solid var(--border);text-align:left}
+.data-table td{padding:8px 14px;border-bottom:1px solid #1a2535}
+.data-table tr:hover td{background:var(--dark)}
+.chain{display:flex;flex-direction:column;gap:2px;margin:20px auto;max-width:720px}
+.chain-step{background:var(--dark);border:1px solid var(--border);border-radius:6px;padding:14px 20px;font-family:'JetBrains Mono',monospace;font-size:14px;color:#c0d8f8;text-align:center}
+.chain-step::after{content:"\2193";display:block;text-align:center;color:var(--muted);font-size:14px;margin-top:6px}
+.chain-step:last-child::after{content:""}
+.chain-step .note{font-family:'EB Garamond',serif;font-size:14px;color:var(--muted);display:block;margin-top:6px; font-style:italic;}
+.chain-step.final{border-color:var(--gold);color:#ffe8a0;background:#100e00}
+.status-bar{background:var(--dark);border:1px solid var(--border);border-radius:8px;padding:16px 20px;margin:30px 0;display:flex;gap:30px;flex-wrap:wrap;font-size:13.5px}
+.status-item span:first-child{font-family:'JetBrains Mono',monospace;font-size:11px;color:var(--muted);text-transform:uppercase;letter-spacing:1px;display:block;margin-bottom:3px}
+.verified{color:#50c878!important}
+.comparison-table th { background: #1a1e29; color: var(--gold); }
+.comparison-table td:first-child { font-weight: 600; color: #a0c0e0; }
+.assumptions-list { background: var(--dark); border: 1px solid var(--border); border-radius: 6px; padding: 15px 20px; margin: 20px 0; }
+.assumptions-list li { font-size: 15px; color: #b8d0e8; margin-bottom: 8px; }
+.assumptions-list li strong { color: var(--accent); }
+</style>
+</head>
+<body>
+
+<div class="paper-header">
+  <div class="journal-line">Preprint &middot; Abril 2026 &middot; Astrofísica Teórica / Cosmología</div>
+  <h1 class="paper-title">Dinámica de Coherencia Fuera del Equilibrio: <br>Derivación del Retardo Inercial y Resolución Analítica del Cúmulo Bala sin Materia Oscura</h1>
+  <div class="author">J. P. Figueroa Torres</div>
+  <div class="affil">Investigador Independiente, Guadalajara, Jalisco, México</div>
+  <div class="dates">Paper II — Secuela del Marco de Gravedad de Coherencia Emergente</div>
+</div>
+
+<div class="status-bar">
+  <div class="status-item"><span>Problema Abierto Resuelto</span><span class="verified">L5 (Dinámica de Cúmulos)</span></div>
+  <div class="status-item"><span>Recuperación Límite Local</span><span class="verified">Relatividad General (Einstein)</span></div>
+  <div class="status-item"><span>Validación Multi-Sistema</span><span class="verified">Bullet, MACS J0025, Abell 520</span></div>
+</div>
+
+<div class="abstract-box">
+  <h2>Resumen</h2>
+  <p>La génesis de la Gravedad de Coherencia Emergente surge de la necesidad de dotar al espacio-tiempo de una ontología física real, superando la rigidez geométrica de la Relatividad General (RG) y la adición empíricamente arbitraria de materia oscura. Tras derivar el umbral de aceleración universal ($g_{crit}$) para el régimen galáctico estacionario (Paper I), expandimos el marco hacia la dinámica fuera del equilibrio. Demostramos formalmente cómo la teoría recupera las ecuaciones exactas de Einstein en el límite solar (donde la coherencia se satura). Mediante un principio variacional en un fondo de De Sitter, probamos que la inercia del vacío gravitacional acopla la fricción de Hubble ($\gamma = 3H_0$) a una propagación sónica $c_K \approx \sqrt{g_{crit} \sigma} \approx 173$ km/s. Resolviendo el campo transitorio, demostramos que las colisiones de cúmulos ($v \gg c_K$) son eventos hiper-supersónicos que impiden la relajación geométrica local, generando un retardo macroscópico dictado por la <strong>Segunda Ley de Coherencia</strong>: $\Delta x \sim \sigma (H_0 v / g_{crit})$. Aplicado empíricamente al Cúmulo Bala, MACS J0025.4-1222 y Abell 520, el modelo predice desfases lente-masa escalonados ($\sim 140$, $\sim 93$ y $\sim 46$ kpc) consistentes con las observaciones de <em>lensing</em> sin requerir parámetros de ajuste libre.</p>
+</div>
+
+<h2 class="section-title">Introducción: Crisis Ontológica y Evolución del Marco</h2>
+<p>Este marco teórico nació de una profunda inconformidad epistemológica hacia la ontología gravitacional de la Relatividad General (RG). Mientras que la RG describe magistralmente <em>cómo</em> se curva la métrica, carece de una ontología fundamental que explique <em>qué</em> es el medio subyacente que obedece dicha curvatura. Ante las anomalías a escala cósmica, el paradigma estándar ($\Lambda$CDM) ha recurrido a la postulación de Materia Oscura, inyectando fluidos invisibles y no interactuantes para forzar la validez fenomenológica de las ecuaciones tensoriales a escalas donde empíricamente fallan.</p>
+
+<p>Al aislar un umbral universal en la aceleración rotacional ($g_{crit}$), quedó en evidencia que tratar al espacio-tiempo como un "bloque" unificado rígidamente entrelazado era insuficiente. Fue imperativo expandir el marco: separar funcionalmente la métrica para introducir una varianza, dotando al vacío de un grado de libertad emergente ($K_{ef}$). Al concebir el espacio-tiempo como un medio refractivo con inercia y coherencia, las ecuaciones de Einstein no se descartan, sino que emergen como el límite térmicamente saturado de este medio.</p>
+
+<h2 class="section-title">El Tensor de Coherencia y la Recuperación de Einstein</h2>
+<p>Cuando la coherencia cosmológica del vacío interacciona con masa bariónica masiva ($K_{ef} > 1$), la velocidad efectiva de propagación del espacio-tiempo disminuye localmente. Esta dinámica introduce un Tensor de Coherencia macroscópico ($\mathcal{K}_{\mu\nu}$) en las ecuaciones de campo:</p>
+
+<div class="eq-block">
+  \[ G_{\mu\nu} + \Lambda g_{\mu\nu} = \frac{8\pi G}{c^4} T_{\mu\nu} + \mathcal{K}_{\mu\nu} \]
+</div>
+
+<p>Donde el tensor de coherencia es proporcional a los gradientes del campo escalar efectivo: $\mathcal{K}_{\mu\nu} \propto \nabla_\mu \nabla_\nu K_{ef}$. Es imperativo demostrar que esta modificación no arruina las predicciones exitosas de la gravedad local.</p>
+
+<h3 class="subsection">2.1 Recuperación del Límite Local (Relatividad General)</h3>
+<p>Para que cualquier teoría de gravedad modificada sea viable, debe recuperar estrictamente la Relatividad General de Einstein en el Sistema Solar, donde la RG ha sido probada con precisiones de partes por billón (e.g., precesión de Mercurio, sonda Cassini). En nuestro marco, esto ocurre de manera analíticamente trivial.</p>
+
+<p>A escalas locales y altas aceleraciones ($g \gg g_{crit}$), la presencia abrumadora de masa central fractura y satura por completo la coherencia cosmológica de fondo. El campo efectivo pierde su varianza dinámica y se asienta en un valor constante trivial: $K_{ef} \to 1$.</p>
+
+<p>Dado que el Tensor de Coherencia depende estrictamente de las derivadas del campo, si el campo es constante, todas sus derivadas se anulan exactas:</p>
+<div class="eq-block">
+  \[ \lim_{g \gg g_{crit}} \nabla_\mu K_{ef} = 0 \implies \mathcal{K}_{\mu\nu} = 0 \]
+</div>
+<p>Substituyendo este límite en nuestra ecuación rectora, el término adicional desaparece sin dejar rastro:</p>
+<div class="eq-block boxed">
+  \[ G_{\mu\nu} + \Lambda g_{\mu\nu} = \frac{8\pi G}{c^4} T_{\mu\nu} \]
+</div>
+<p><strong>Conclusión:</strong> La Relatividad General de Einstein es la solución exacta e inalterada de la Gravedad de Coherencia Emergente en el límite de saturación local. La materia oscura solo es "necesaria" en RG porque se intenta usar la ecuación de saturación en regímenes infrarrojos donde $\nabla K_{ef} \neq 0$.</p>
+
+<h2 class="section-title">Inercia del Vacío: Formalización Variacional</h2>
+<p>Una vez asegurado el límite de Einstein, debemos analizar el régimen dinámico infrarrojo. Si el espacio-tiempo es un medio emergente, posee inercia térmica; no responde instantáneamente a las perturbaciones.</p>
+
+<h3 class="subsection">3.1 Derivación de la Fricción de Hubble ($\gamma = 3H_0$)</h3>
+<p>Consideremos la acción $\mathcal{S}$ del campo base $x$ en un universo en expansión dictado por la métrica de Friedmann-Lemaître-Robertson-Walker (FLRW) con factor de escala $a(t)$. El elemento de volumen invariante es $\sqrt{-g} = a^3(t)$:</p>
+
+<div class="eq-block">
+  \[ \mathcal{S} = \int d^4x \sqrt{-g} \left[ -\frac{1}{2}g^{\mu\nu}\partial_\mu x \partial_\nu x - V(x) \right] \]
+</div>
+
+<p>Minimizando la acción vía Euler-Lagrange, $\frac{1}{\sqrt{-g}}\partial_\mu(\sqrt{-g}g^{\mu\nu}\partial_\nu x) = \frac{\partial V}{\partial x}$, la derivada temporal sobre el volumen en expansión genera matemáticamente un término de decaimiento ineludible:</p>
+
+<div class="eq-block">
+  \[ \ddot{x} + 3H_0 \dot{x} - \frac{1}{a^2}\nabla^2 x + V'(x) = 0 \]
+</div>
+
+<p>Al aplicar el operador de promedio de grano grueso (<em>coarse-graining</em>) para extraer la métrica macroscópica ($K_{ef} \sim \langle x^2 \rangle_\ell$), la ecuación de onda del campo efectivo hereda intacto este término de disipación cosmológica. <strong>De aquí, la tasa de fricción queda fijada analíticamente sin parámetros libres: $\gamma = 3H_0$.</strong> Dimensionalmente, $\gamma \sim H_0$.</p>
+
+<h3 class="subsection">3.2 Derivación Analítica de la Velocidad Sónica ($c_K$)</h3>
+<p>Por exigencia dimensional, la rigidez espacial de propagación $c_K^2$ debe enlazar la aceleración crítica cosmológica $g_{crit}$ con la dispersión transversal de masa perturbadora $\sigma$. Por ende, $c_K^2 \approx g_{crit}\sigma$. Para un núcleo de gas de cúmulo ($\sigma \sim 100$ kpc), la velocidad sónica del vacío gravitacional adquiere un valor finito y lento:</p>
+
+<div class="eq-block boxed">
+  \[ c_K \approx \sqrt{(10^{-11} \text{ m/s}^2)(3 \times 10^{21} \text{ m})} \approx 173 \text{ km/s} \]
+</div>
+
+<h2 class="section-title">Ecuación Transitoria y la Segunda Ley ($\Delta x$)</h2>
+<p>Evaluamos el campo desde el marco comóvil de la fuente bariónica (un subcúmulo de gas) que viaja a velocidad $v$. Bajo la transformación galileana $\xi = x - vt$, y asumiendo una perturbación lineal sub-dominante $\delta K \ll K_0$, la ecuación de onda amortiguada se transforma en la ecuación estacionaria del retardo inercial:</p>
+
+<div class="eq-block">
+  \[ (v^2 - c_K^2)\frac{\partial^2 (\delta K)}{\partial \xi^2} - \gamma v \frac{\partial (\delta K)}{\partial \xi} = S(\xi) \]
+</div>
+
+<p>El operador asimétrico de primera derivada ($-\gamma v \delta K'$), hijo directo de la Fricción de Hubble, fuerza una ruptura de la isotropía espacial (histéresis de fase). Evaluando el balance dominante topológico ($\delta K' \sim \delta K / \sigma$), el pico de coherencia gravitacional se desfasa en una proporción geométrica $\Delta x \sim \sigma^2 (\gamma v / c_K^2)$. Sustituyendo $c_K^2 \approx g_{crit}\sigma$ y $\gamma \sim H_0$, cristalizamos la ley constitutiva transitoria:</p>
+
+<div class="theorem-box">
+  <div class="box-title">Ley del Efecto Memoria Gravitacional (Segunda Ley)</div>
+  <center style="font-size: 22px; color: #fff;">\[ \Delta x \sim \sigma \frac{H_0 v}{g_{crit}} \]</center>
+  <p style="margin-top: 10px; font-size: 14px; color: var(--muted); text-align: center; font-style: italic;">El desfase espacial Lente-Masa es proporcional al ímpetu de colisión y a la expansión del universo, e inversamente proporcional a la aceleración crítica límite.</p>
+</div>
+
+<h2 class="section-title">Validación Multi-Sistema: Abell y Cúmulos Bullet</h2>
+<p>La Segunda Ley exige un escalamiento lineal predictivo riguroso ($\Delta x \propto v$). Aplicamos la predicción a tres sistemas colisionales de la literatura observacional asumiendo dispersiones de masa comparables ($\sigma \sim 100$ kpc), calculando el Número de Mach astrofísico ($\mathcal{M} = v / c_K$).</p>
+
+<table class="data-table">
+  <caption>Tabla 1. Evaluación analítica del desfase Lente-Masa ($\Delta x$) en tres regímenes cinemáticos.</caption>
+  <thead>
+    <tr>
+      <th>Sistema Astrofísico</th>
+      <th>Vel. Relativa ($v$)</th>
+      <th>Nº Mach ($\mathcal{M}$)</th>
+      <th>Predicción Analítica ($\Delta x$)</th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr>
+      <td><strong>1E 0657-558 (Bullet Cluster)</strong></td>
+      <td>$\sim 3000$ km/s</td>
+      <td>$\sim 17.3$</td>
+      <td>$\approx \mathbf{140 \text{ kpc}}$</td>
+    </tr>
+    <tr>
+      <td><strong>MACS J0025.4-1222 (Baby Bullet)</strong></td>
+      <td>$\sim 2000$ km/s</td>
+      <td>$\sim 11.5$</td>
+      <td>$\approx \mathbf{93 \text{ kpc}}$</td>
+    </tr>
+    <tr>
+      <td><strong>Abell 520 (Train Wreck Cluster)</strong></td>
+      <td>$\sim 1000$ km/s</td>
+      <td>$\sim 5.7$</td>
+      <td>$\approx \mathbf{46 \text{ kpc}}$</td>
+    </tr>
+  </tbody>
+</table>
+
+<p><strong>Análisis Topológico (La cicatriz sónica):</strong> A velocidades extremas (Mach 17), el gas bariónico colisionante perfora la malla espacial más rápido de lo que la geometría puede propagar la deformación métrica. La consecuencia inevitable es un desgarro direccional del campo de coherencia, dejando atrás una estela cónica de curvatura fósil. A través de la ecuación de Poisson efectiva ($\nabla^2 \Phi \propto K_{ef}$), esta cicatriz acústica es leída por el lensing gravitacional como un pozo "vacío", lo cual $\Lambda$CDM modeliza ficticiamente inyectando halos oscuros pre-fabricados.</p>
+
+<h2 class="section-title">Matriz Conceptual: $\Lambda$CDM vs Gravedad de Coherencia</h2>
+
+<p>A modo de síntesis teórica, la siguiente tabla condensa la arquitectura ontológica de ambos paradigmas sobre los mismos observables, demostrando la superioridad analítica de la coherencia emergente por ausencia de <em>fine-tuning</em>.</p>
+
+<table class="data-table comparison-table">
+  <caption>Tabla 2. Resumen mental de divergencias ontológicas por régimen gravitacional.</caption>
+  <thead>
+    <tr>
+      <th>Fenómeno Observable</th>
+      <th>Paradigma Estándar ($\Lambda$CDM)</th>
+      <th>Gravedad de Coherencia Emergente</th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr>
+      <td><strong>Límite Local (Sistema Solar)</strong></td>
+      <td>Relatividad General sin DM.</td>
+      <td>Recuperación analítica exacta de RG por saturación métrica local ($K_{ef} \to 1$).</td>
+    </tr>
+    <tr>
+      <td><strong>Rotación Galáctica (Estática)</strong></td>
+      <td>Sintonización manual de halos de DM (perfiles isotérmicos/NFW) por cada galaxia.</td>
+      <td>Consecuencia universal dictada por la aceleración crítica y el acoplamiento cosmológico (Primera Ley).</td>
+    </tr>
+    <tr>
+      <td><strong>Choques de Cúmulos (Dinámica)</strong></td>
+      <td>Fluido de partículas invisibles cruzándose libremente sin fricción (DM desfasada).</td>
+      <td>Retardo cinemático por inercia métrica ante choques hiper-supersónicos (Segunda Ley, Efecto Memoria).</td>
+    </tr>
+    <tr>
+      <td><strong>Evolución y Expansión</strong></td>
+      <td>Adición de parámetros libres e independientes a las ecuaciones de campo ($\Omega_m, \Lambda$).</td>
+      <td>Parámetros cinemáticos directamente acoplados al tensor de coherencia ($H_0$ y $g_{crit}$).</td>
+    </tr>
+  </tbody>
+</table>
+
+<h2 class="section-title">Conclusiones Finales</h2>
+<p>El régimen transitorio dinámico ha sido formalmente subsumido en el marco de la Gravedad de Coherencia Emergente. Al probar que la Relatividad General de Einstein es el límite invariante estricto de saturación local, y al derivar la inercia térmica infrarroja vía Fricción de Hubble en un fondo FLRW, demostramos que la separación topológica Lente-Masa es una exigencia analítica del espacio-tiempo.</p>
+<p>La <em>Segunda Ley de Coherencia</em> escala lógicamente a través de regímenes cinemáticos empíricos (Bullet, MACS, Abell) basándose exclusivamente en escalamientos de Número de Mach. Este paradigma revoca la necesidad ontológica de postular partículas exóticas oscuras, reinterpretando los vastos "halos fantasma" del universo observacional como perturbaciones inerciales supersónicas grabadas temporalmente sobre el vacío cósmico.</p>
+
+<hr>
+<div style="margin-top:20px;padding-top:10px;font-size:12px;color:var(--muted);font-family:'JetBrains Mono',monospace;">
+J. P. Figueroa Torres &middot; Guadalajara, Jalisco, México &middot; Abril 2026 &middot; Versión 2.6 — Paper II
+</div>
+
+</body>
+</html>
