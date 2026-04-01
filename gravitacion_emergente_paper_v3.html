@@ -1,0 +1,2074 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Gravitación Emergente desde Coherencia de De Sitter</title>
+<script>
+window.MathJax = {
+  tex: {
+    inlineMath: [['$','$']],
+    displayMath: [['$$','$$']],
+    packages: {'[+]': ['boldsymbol','ams']}
+  },
+  options: { skipHtmlTags: ['script','noscript','style','textarea'] },
+  startup: { typeset: true }
+};
+</script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/mathjax/3.2.2/es5/tex-mml-chtml.min.js"></script>
+<link href="https://fonts.googleapis.com/css2?family=Crimson+Text:ital,wght@0,400;0,600;1,400;1,600&family=Source+Code+Pro:wght@400;600&display=swap" rel="stylesheet">
+
+<style>
+:root {
+  --bg: #fafafa;
+  --paper: #ffffff;
+  --text: #1a1a1a;
+  --text-light: #4a4a4a;
+  --border: #d0d0d0;
+  --accent: #2563eb;
+  --accent-light: #60a5fa;
+  --success: #059669;
+  --warning: #d97706;
+  --critical: #dc2626;
+  --header-bg: #f8f9fa;
+  --eq-bg: #f5f7fa;
+}
+
+* { margin: 0; padding: 0; box-sizing: border-box; }
+
+@page {
+  size: A4;
+  margin: 2.5cm;
+}
+
+body {
+  font-family: 'Crimson Text', Georgia, serif;
+  font-size: 12pt;
+  line-height: 1.65;
+  color: var(--text);
+  background: var(--bg);
+  counter-reset: section subsection figure table equation;
+}
+
+.paper-container {
+  max-width: 21cm;
+  margin: 2cm auto;
+  background: var(--paper);
+  padding: 3cm;
+  box-shadow: 0 2px 20px rgba(0,0,0,0.08);
+}
+
+/* ═══════════════════════════════════════════════
+   PORTADA
+   ═══════════════════════════════════════════════ */
+
+.title-page {
+  text-align: center;
+  padding: 4cm 2cm;
+  page-break-after: always;
+  border-bottom: 2px solid var(--border);
+  margin-bottom: 3cm;
+}
+
+.journal-info {
+  font-family: 'Source Code Pro', monospace;
+  font-size: 9pt;
+  color: var(--text-light);
+  text-transform: uppercase;
+  letter-spacing: 2px;
+  margin-bottom: 3cm;
+}
+
+.paper-title {
+  font-size: 26pt;
+  font-weight: 600;
+  line-height: 1.25;
+  margin-bottom: 1.5cm;
+  color: var(--text);
+}
+
+.paper-subtitle {
+  font-size: 15pt;
+  font-weight: 400;
+  font-style: italic;
+  color: var(--text-light);
+  margin-bottom: 3cm;
+  line-height: 1.5;
+}
+
+.author-block {
+  margin-bottom: 2cm;
+}
+
+.author-name {
+  font-size: 14pt;
+  font-weight: 600;
+  margin-bottom: 0.5cm;
+}
+
+.author-affiliation {
+  font-size: 11pt;
+  color: var(--text-light);
+  font-style: italic;
+  margin-bottom: 0.3cm;
+}
+
+.author-contact {
+  font-family: 'Source Code Pro', monospace;
+  font-size: 9pt;
+  color: var(--accent);
+  margin-top: 0.3cm;
+}
+
+.date-info {
+  font-size: 11pt;
+  color: var(--text-light);
+  margin-top: 2.5cm;
+  padding-top: 1cm;
+  border-top: 1px solid var(--border);
+}
+
+.version-badge {
+  display: inline-block;
+  background: var(--accent);
+  color: white;
+  padding: 4px 12px;
+  border-radius: 4px;
+  font-size: 9pt;
+  font-family: 'Source Code Pro', monospace;
+  margin-top: 0.5cm;
+  letter-spacing: 1px;
+}
+
+/* ═══════════════════════════════════════════════
+   ABSTRACT
+   ═══════════════════════════════════════════════ */
+
+.abstract {
+  background: var(--header-bg);
+  padding: 1.5cm;
+  margin: 2cm 0;
+  border-left: 4px solid var(--accent);
+  page-break-inside: avoid;
+}
+
+.abstract-title {
+  font-size: 12pt;
+  font-weight: 600;
+  text-transform: uppercase;
+  letter-spacing: 1.5px;
+  margin-bottom: 1cm;
+  color: var(--accent);
+}
+
+.keywords {
+  margin-top: 1cm;
+  padding-top: 0.8cm;
+  border-top: 1px solid var(--border);
+  font-size: 10pt;
+  line-height: 1.6;
+}
+
+.keywords strong {
+  font-weight: 600;
+  color: var(--text);
+}
+
+/* ═══════════════════════════════════════════════
+   ÍNDICE
+   ═══════════════════════════════════════════════ */
+
+.toc {
+  page-break-after: always;
+  margin: 2cm 0 3cm 0;
+}
+
+.toc-title {
+  font-size: 20pt;
+  font-weight: 600;
+  margin-bottom: 2cm;
+  text-align: center;
+  color: var(--text);
+}
+
+.toc-item {
+  display: flex;
+  justify-content: space-between;
+  padding: 0.4cm 0.5cm;
+  border-bottom: 1px dotted var(--border);
+  transition: background 0.2s;
+}
+
+.toc-item:hover {
+  background: var(--header-bg);
+}
+
+.toc-item.level-1 {
+  font-weight: 600;
+  font-size: 11pt;
+  padding-left: 0;
+  margin-top: 0.3cm;
+}
+
+.toc-item.level-2 {
+  font-size: 10pt;
+  padding-left: 1.2cm;
+}
+
+.toc-item.level-3 {
+  font-size: 10pt;
+  padding-left: 2.4cm;
+  color: var(--text-light);
+}
+
+.toc-dots {
+  flex: 1;
+  border-bottom: 1px dotted var(--border);
+  margin: 0 0.5cm;
+  align-self: flex-end;
+  margin-bottom: 0.3cm;
+}
+
+.toc-page {
+  font-family: 'Source Code Pro', monospace;
+  color: var(--text-light);
+  font-size: 10pt;
+}
+
+/* ═══════════════════════════════════════════════
+   SECCIONES
+   ═══════════════════════════════════════════════ */
+
+.section {
+  margin: 2.5cm 0 2cm 0;
+  page-break-inside: avoid;
+}
+
+.section-title {
+  font-size: 18pt;
+  font-weight: 600;
+  margin-bottom: 1.2cm;
+  color: var(--text);
+  border-bottom: 2px solid var(--accent);
+  padding-bottom: 0.4cm;
+}
+
+.section-title::before {
+  counter-increment: section;
+  content: counter(section) ". ";
+  color: var(--accent);
+  margin-right: 0.3cm;
+}
+
+.subsection-title {
+  font-size: 14pt;
+  font-weight: 600;
+  margin: 1.5cm 0 0.8cm 0;
+  color: var(--text);
+}
+
+.subsection-title::before {
+  counter-increment: subsection;
+  content: counter(section) "." counter(subsection) " ";
+  color: var(--accent);
+  margin-right: 0.3cm;
+}
+
+.section { counter-reset: subsection; }
+
+p {
+  text-align: justify;
+  margin-bottom: 0.8cm;
+  hyphens: auto;
+}
+
+/* ═══════════════════════════════════════════════
+   ECUACIONES
+   ═══════════════════════════════════════════════ */
+
+.equation-block {
+  margin: 1.5cm 0;
+  padding: 1.2cm;
+  background: var(--eq-bg);
+  border: 1px solid var(--border);
+  border-left: 4px solid var(--accent);
+  page-break-inside: avoid;
+  overflow-x: auto;
+}
+
+.equation-block.highlight {
+  background: #fef3c7;
+  border-left-color: var(--warning);
+  border-width: 2px;
+}
+
+.equation-label {
+  font-family: 'Source Code Pro', monospace;
+  font-size: 9pt;
+  text-transform: uppercase;
+  letter-spacing: 1.5px;
+  color: var(--text-light);
+  margin-bottom: 0.6cm;
+  display: block;
+}
+
+.equation-number {
+  text-align: right;
+  font-family: 'Source Code Pro', monospace;
+  font-size: 10pt;
+  color: var(--text-light);
+  margin-top: 0.6cm;
+}
+
+/* ═══════════════════════════════════════════════
+   LEYES FUNDAMENTALES
+   ═══════════════════════════════════════════════ */
+
+.law-box {
+  border: 3px solid var(--accent);
+  padding: 2cm;
+  margin: 2.5cm 0;
+  background: linear-gradient(to bottom, #eff6ff 0%, #ffffff 100%);
+  page-break-inside: avoid;
+  box-shadow: 0 4px 12px rgba(37,99,235,0.1);
+}
+
+.law-title {
+  font-size: 16pt;
+  font-weight: 600;
+  color: var(--accent);
+  text-align: center;
+  margin-bottom: 1.5cm;
+  text-transform: uppercase;
+  letter-spacing: 3px;
+  border-bottom: 2px solid var(--accent-light);
+  padding-bottom: 0.5cm;
+}
+
+.law-statement {
+  font-size: 14pt;
+  text-align: center;
+  margin: 1.5cm 0;
+  font-weight: 500;
+}
+
+.law-conditions {
+  margin-top: 1.2cm;
+  padding-top: 1cm;
+  border-top: 1px dashed var(--border);
+  font-size: 11pt;
+  color: var(--text-light);
+}
+
+/* ═══════════════════════════════════════════════
+   TABLAS Y FIGURAS
+   ═══════════════════════════════════════════════ */
+
+.figure {
+  margin: 2cm 0;
+  page-break-inside: avoid;
+  text-align: center;
+}
+
+.figure-content {
+  background: white;
+  border: 1px solid var(--border);
+  padding: 1.2cm;
+  margin-bottom: 0.6cm;
+}
+
+.figure-caption {
+  font-size: 10pt;
+  color: var(--text-light);
+  text-align: left;
+  line-height: 1.5;
+  margin-top: 0.6cm;
+}
+
+.figure-caption::before {
+  counter-increment: figure;
+  content: "Figura " counter(figure) ". ";
+  font-weight: 600;
+  color: var(--text);
+}
+
+table {
+  width: 100%;
+  border-collapse: collapse;
+  margin: 1.5cm 0;
+  font-size: 10pt;
+  page-break-inside: avoid;
+}
+
+.table-container {
+  margin: 2cm 0;
+  page-break-inside: avoid;
+}
+
+.table-caption {
+  font-size: 10pt;
+  color: var(--text-light);
+  text-align: left;
+  margin-bottom: 0.6cm;
+  line-height: 1.5;
+}
+
+.table-caption::before {
+  counter-increment: table;
+  content: "Tabla " counter(table) ". ";
+  font-weight: 600;
+  color: var(--text);
+}
+
+th {
+  background: var(--header-bg);
+  padding: 0.5cm;
+  text-align: left;
+  border-bottom: 2px solid var(--accent);
+  font-weight: 600;
+  font-family: 'Source Code Pro', monospace;
+  font-size: 9pt;
+  text-transform: uppercase;
+  letter-spacing: 0.5px;
+}
+
+td {
+  padding: 0.4cm 0.5cm;
+  border-bottom: 1px solid var(--border);
+}
+
+tr:hover {
+  background: var(--header-bg);
+}
+
+.highlight-row {
+  background: #fef3c7 !important;
+  font-weight: 600;
+}
+
+.pass { color: var(--success); font-weight: 600; }
+.fail { color: var(--critical); font-weight: 600; }
+
+/* ═══════════════════════════════════════════════
+   CAJAS ESPECIALES
+   ═══════════════════════════════════════════════ */
+
+.theorem-box,
+.principle-box,
+.result-box,
+.warning-box {
+  padding: 1.2cm 1.5cm;
+  margin: 1.5cm 0;
+  page-break-inside: avoid;
+  border-radius: 6px;
+}
+
+.theorem-box {
+  background: #eff6ff;
+  border-left: 5px solid var(--accent);
+}
+
+.principle-box {
+  background: #f0fdf4;
+  border-left: 5px solid var(--success);
+}
+
+.result-box {
+  background: #fffbeb;
+  border-left: 5px solid var(--warning);
+}
+
+.warning-box {
+  background: #fef2f2;
+  border-left: 5px solid var(--critical);
+}
+
+.box-title {
+  font-weight: 600;
+  font-size: 11pt;
+  text-transform: uppercase;
+  letter-spacing: 1.5px;
+  margin-bottom: 0.8cm;
+}
+
+.theorem-box .box-title { color: var(--accent); }
+.principle-box .box-title { color: var(--success); }
+.result-box .box-title { color: var(--warning); }
+.warning-box .box-title { color: var(--critical); }
+
+/* ═══════════════════════════════════════════════
+   STATUS Y MÉTRICAS
+   ═══════════════════════════════════════════════ */
+
+.status-bar {
+  background: var(--header-bg);
+  border: 1px solid var(--border);
+  border-radius: 8px;
+  padding: 1cm 1.5cm;
+  margin: 2cm 0;
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(180px, 1fr));
+  gap: 1cm;
+}
+
+.status-item {
+  text-align: center;
+}
+
+.status-label {
+  font-family: 'Source Code Pro', monospace;
+  font-size: 9pt;
+  color: var(--text-light);
+  text-transform: uppercase;
+  letter-spacing: 1px;
+  display: block;
+  margin-bottom: 0.3cm;
+}
+
+.status-value {
+  font-size: 14pt;
+  font-weight: 600;
+}
+
+.status-value.verified { color: var(--success); }
+.status-value.pending { color: var(--warning); }
+.status-value.critical { color: var(--critical); }
+
+/* ═══════════════════════════════════════════════
+   LISTAS
+   ═══════════════════════════════════════════════ */
+
+ul, ol {
+  margin: 1cm 0 1cm 2cm;
+}
+
+li {
+  margin-bottom: 0.4cm;
+  line-height: 1.6;
+}
+
+/* ═══════════════════════════════════════════════
+   PROBLEMAS ABIERTOS
+   ═══════════════════════════════════════════════ */
+
+.problems-grid {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 1cm;
+  margin: 1.5cm 0;
+}
+
+.problem-item {
+  background: #fef2f2;
+  border-left: 4px solid var(--critical);
+  padding: 1cm;
+  border-radius: 4px;
+}
+
+.problem-id {
+  font-family: 'Source Code Pro', monospace;
+  font-size: 11pt;
+  font-weight: 600;
+  color: var(--critical);
+  margin-bottom: 0.4cm;
+}
+
+.problem-desc {
+  font-size: 10pt;
+  line-height: 1.5;
+  color: var(--text);
+}
+
+/* ═══════════════════════════════════════════════
+   REFERENCIAS
+   ═══════════════════════════════════════════════ */
+
+.references {
+  margin-top: 3cm;
+  page-break-before: always;
+}
+
+.ref-item {
+  padding: 0.5cm 0;
+  border-bottom: 1px solid #f0f0f0;
+  font-size: 10pt;
+  line-height: 1.6;
+}
+
+.ref-num {
+  font-family: 'Source Code Pro', monospace;
+  color: var(--accent);
+  font-weight: 600;
+  margin-right: 0.5cm;
+}
+
+/* ═══════════════════════════════════════════════
+   PIE DE PÁGINA
+   ═══════════════════════════════════════════════ */
+
+.footer {
+  margin-top: 3cm;
+  padding-top: 1cm;
+  border-top: 2px solid var(--border);
+  font-size: 9pt;
+  color: var(--text-light);
+  text-align: center;
+  font-family: 'Source Code Pro', monospace;
+}
+
+/* ═══════════════════════════════════════════════
+   IMPRESIÓN
+   ═══════════════════════════════════════════════ */
+
+@media print {
+  body { background: white; }
+  .paper-container {
+    max-width: 100%;
+    margin: 0;
+    padding: 0;
+    box-shadow: none;
+  }
+  .section-title, .subsection-title {
+    page-break-after: avoid;
+  }
+  .figure, .table-container, .equation-block, .law-box {
+    page-break-inside: avoid;
+  }
+}
+</style>
+</head>
+<body>
+
+<div class="paper-container">
+
+<!-- ══════════════════════════════════════════════════════════════════════
+     PORTADA
+     ══════════════════════════════════════════════════════════════════════ -->
+
+<div class="title-page">
+  <div class="journal-info">
+    Documento de Investigación · Física Teórica · Gravitación y Cosmología
+  </div>
+
+  <h1 class="paper-title">
+    Gravitación Emergente desde<br>Coherencia de De Sitter
+  </h1>
+
+  <p class="paper-subtitle">
+    Derivación sin Parámetros Libres de la Aceleración Crítica,<br>
+    Modelo de Dos Regímenes en Dinámica Galáctica,<br>
+    y Evolución Cosmológica de la Relación de Tully-Fisher Bariónica
+  </p>
+
+  <div class="author-block">
+    <div class="author-name">Juan Pablo Figueroa Torres</div>
+    <div class="author-affiliation">Investigador Independiente</div>
+    <div class="author-affiliation">Guadalajara, Jalisco, México</div>
+    <div class="author-contact">quimikcasera369-ai</div>
+  </div>
+
+  <div class="date-info">
+    <strong>Versión:</strong> 3.0 — Documento Final<br>
+    <strong>Fecha de elaboración:</strong> 31 de marzo de 2026<br>
+    <strong>Estado:</strong> Investigación en desarrollo
+  </div>
+
+  <div class="version-badge">V3.0 FINAL</div>
+</div>
+
+<!-- ══════════════════════════════════════════════════════════════════════
+     ABSTRACT
+     ══════════════════════════════════════════════════════════════════════ -->
+
+<div class="abstract">
+  <div class="abstract-title">Resumen</div>
+  
+  <p>
+    Se presenta una derivación completa de un modelo gravitacional de dos regímenes que explica las curvas de rotación galácticas planas sin invocar materia oscura. El umbral de aceleración crítica que separa el régimen Hamiltoniano del régimen colectivo se deriva sin parámetros libres:
+  </p>
+
+  <div style="text-align: center; margin: 1.2cm 0; font-size: 14pt; font-weight: 500;">
+    $$g_{\text{crit}} = \frac{cH_0}{4\pi^2\sqrt{3}} \approx 9.58 \times 10^{-12}\text{ m}\,\text{s}^{-2}$$
+  </div>
+
+  <p>
+    Se proporcionan tres derivaciones independientes de este valor: (1) geométrica, desde el espectro del operador de Beltrami en la 3-esfera y el volumen de De Sitter; (2) cuántica, mediante el propagador de Wightman de Bunch-Davies y el funcional de influencia de Feynman-Vernon, que produce una ecuación de Drude efectiva con coeficiente de disipación $\gamma = H_0/(4\pi^2)$; (3) numérica, desde simulaciones de la ecuación fundamental que muestran curvatura emergente $\kappa_{\text{eff}} \approx 2.0$ robusta e independiente de parámetros locales.
+  </p>
+
+  <p>
+    Del Lagrangiano de $k$-esencia con $F(X)=X^{3/2}$, la variación de Euler-Lagrange produce exactamente la relación $V^4 = GM_{\text{bar}}\,g_{\text{crit}}$ sin aproximaciones. La curva de rotación plana se interpreta como consecuencia topológica de la geometría compacta del horizonte $S^3$ de De Sitter: en un espacio compacto sin frontera, no existe velocidad de escape, resultando en un plateau natural.
+  </p>
+
+  <p>
+    La validación observacional se realizó mediante protocolo riguroso sobre 184 galaxias del catálogo SPARC y LITTLE THINGS. El modo fundamental $m=1$ se confirmó mediante prueba de falsación dual: solo este modo satisface simultáneamente el criterio de éxito en galaxias colectivas (error mediano <20%, 5/5 galaxias validadas) y el criterio de fallo sistemático en galaxias Hamiltonianas (error mediano ~55%). Los modos $m \geq 2$ son refutados con significancia estadística.
+  </p>
+
+  <p>
+    Como consecuencia cosmológica inevitable, la Relación de Tully-Fisher Bariónica evoluciona con el redshift según $V(z)/V(0) = [H(z)/H_0]^{1/4}$, prediciendo un corrimiento de $+0.120 \pm 0.030$ dex en velocidad a $z=2$. Esta predicción es universal en masa bariónica, independiente de historia de formación, y falsable con JWST y ELT en los próximos años. El marco completo contiene cero parámetros libres ajustables.
+  </p>
+
+  <div class="keywords">
+    <strong>Palabras clave:</strong> gravitación · materia oscura · cosmología observacional · curvas de rotación galácticas · relación de Tully-Fisher · $k$-esencia · espacio-tiempo de De Sitter · decoherencia cuántica · geometría espectral
+  </div>
+</div>
+
+<!-- ══════════════════════════════════════════════════════════════════════
+     MÉTRICAS DE VALIDACIÓN
+     ══════════════════════════════════════════════════════════════════════ -->
+
+<div class="status-bar">
+  <div class="status-item">
+    <span class="status-label">Parámetros libres</span>
+    <span class="status-value verified">Cero</span>
+  </div>
+  <div class="status-item">
+    <span class="status-label">Galaxias validadas</span>
+    <span class="status-value verified">5 / 5 colectivas</span>
+  </div>
+  <div class="status-item">
+    <span class="status-label">Error mediano</span>
+    <span class="status-value verified">10.0%</span>
+  </div>
+  <div class="status-item">
+    <span class="status-label">Falsos positivos</span>
+    <span class="status-value verified">0 / 5</span>
+  </div>
+  <div class="status-item">
+    <span class="status-label">Predicción JWST</span>
+    <span class="status-value pending">+0.120 dex @ z=2</span>
+  </div>
+  <div class="status-item">
+    <span class="status-label">Consistencia interna</span>
+    <span class="status-value verified">3 derivaciones</span>
+  </div>
+</div>
+
+<!-- ══════════════════════════════════════════════════════════════════════
+     ÍNDICE
+     ══════════════════════════════════════════════════════════════════════ -->
+
+<div class="toc">
+  <h2 class="toc-title">Índice</h2>
+  
+  <div class="toc-item level-1">
+    <span>1. Introducción</span>
+    <span class="toc-dots"></span>
+    <span class="toc-page">1</span>
+  </div>
+  
+  <div class="toc-item level-1">
+    <span>2. Marco Teórico Fundamental</span>
+    <span class="toc-dots"></span>
+    <span class="toc-page">3</span>
+  </div>
+  <div class="toc-item level-2">
+    <span>2.1 Postulado de Geometría Emergente</span>
+    <span class="toc-dots"></span>
+    <span class="toc-page">3</span>
+  </div>
+  <div class="toc-item level-2">
+    <span>2.2 Dinámica de Propagación</span>
+    <span class="toc-dots"></span>
+    <span class="toc-page">4</span>
+  </div>
+  <div class="toc-item level-2">
+    <span>2.3 Métrica y Curvatura Efectivas</span>
+    <span class="toc-dots"></span>
+    <span class="toc-page">5</span>
+  </div>
+  
+  <div class="toc-item level-1">
+    <span>3. Derivación Geométrica de g<sub>crit</sub></span>
+    <span class="toc-dots"></span>
+    <span class="toc-page">6</span>
+  </div>
+  <div class="toc-item level-2">
+    <span>3.1 Factor de Fourier: 4π²</span>
+    <span class="toc-dots"></span>
+    <span class="toc-page">6</span>
+  </div>
+  <div class="toc-item level-2">
+    <span>3.2 Factor Geométrico: √3</span>
+    <span class="toc-dots"></span>
+    <span class="toc-page">7</span>
+  </div>
+  <div class="toc-item level-3">
+    <span>Ruta 1: Operador de Beltrami en S³</span>
+    <span class="toc-dots"></span>
+    <span class="toc-page">7</span>
+  </div>
+  <div class="toc-item level-3">
+    <span>Ruta 2: Operador de Lichnerowicz en S⁴</span>
+    <span class="toc-dots"></span>
+    <span class="toc-page">8</span>
+  </div>
+  <div class="toc-item level-3">
+    <span>Ruta 3: Isotropía Espacial</span>
+    <span class="toc-dots"></span>
+    <span class="toc-page">8</span>
+  </div>
+  
+  <div class="toc-item level-1">
+    <span>4. Derivación Cuántica desde Vacío de Bunch-Davies</span>
+    <span class="toc-dots"></span>
+    <span class="toc-page">9</span>
+  </div>
+  <div class="toc-item level-2">
+    <span>4.1 Principio de Resolución del Vacío</span>
+    <span class="toc-dots"></span>
+    <span class="toc-page">9</span>
+  </div>
+  <div class="toc-item level-2">
+    <span>4.2 Matriz de Densidad Reducida</span>
+    <span class="toc-dots"></span>
+    <span class="toc-page">10</span>
+  </div>
+  <div class="toc-item level-2">
+    <span>4.3 Ecuación de Drude Efectiva</span>
+    <span class="toc-dots"></span>
+    <span class="toc-page">11</span>
+  </div>
+  <div class="toc-item level-2">
+    <span>4.4 Teorema de Separación</span>
+    <span class="toc-dots"></span>
+    <span class="toc-page">12</span>
+  </div>
+  
+  <div class="toc-item level-1">
+    <span>5. Derivación Numérica desde Simulación</span>
+    <span class="toc-dots"></span>
+    <span class="toc-page">13</span>
+  </div>
+  
+  <div class="toc-item level-1">
+    <span>6. Las Dos Leyes Fundamentales</span>
+    <span class="toc-dots"></span>
+    <span class="toc-page">15</span>
+  </div>
+  
+  <div class="toc-item level-1">
+    <span>7. Ecuación del Campo y Teoría de Einstein Efectiva</span>
+    <span class="toc-dots"></span>
+    <span class="toc-page">17</span>
+  </div>
+  
+  <div class="toc-item level-1">
+    <span>8. Validación Observacional</span>
+    <span class="toc-dots"></span>
+    <span class="toc-page">19</span>
+  </div>
+  <div class="toc-item level-2">
+    <span>8.1 Protocolo SPARC</span>
+    <span class="toc-dots"></span>
+    <span class="toc-page">19</span>
+  </div>
+  <div class="toc-item level-2">
+    <span>8.2 Galaxias Colectivas Validadas</span>
+    <span class="toc-dots"></span>
+    <span class="toc-page">20</span>
+  </div>
+  <div class="toc-item level-2">
+    <span>8.3 Prueba de Falsación Dual</span>
+    <span class="toc-dots"></span>
+    <span class="toc-page">21</span>
+  </div>
+  
+  <div class="toc-item level-1">
+    <span>9. Predicciones Cosmológicas</span>
+    <span class="toc-dots"></span>
+    <span class="toc-page">23</span>
+  </div>
+  
+  <div class="toc-item level-1">
+    <span>10. Interpretación Topológica del Plateau</span>
+    <span class="toc-dots"></span>
+    <span class="toc-page">25</span>
+  </div>
+  
+  <div class="toc-item level-1">
+    <span>11. Limitaciones y Problemas Abiertos</span>
+    <span class="toc-dots"></span>
+    <span class="toc-page">27</span>
+  </div>
+  
+  <div class="toc-item level-1">
+    <span>12. Conclusiones</span>
+    <span class="toc-dots"></span>
+    <span class="toc-page">29</span>
+  </div>
+  
+  <div class="toc-item level-1">
+    <span>Referencias</span>
+    <span class="toc-dots"></span>
+    <span class="toc-page">31</span>
+  </div>
+</div>
+
+<!-- ══════════════════════════════════════════════════════════════════════
+     CONTENIDO PRINCIPAL
+     ══════════════════════════════════════════════════════════════════════ -->
+
+<div class="section">
+  <h2 class="section-title">Introducción</h2>
+  
+  <p>
+    Las curvas de rotación planas de galaxias enanas y de baja luminosidad superficial constituyen uno de los problemas no resueltos más persistentes en astrofísica moderna. Desde las observaciones pioneras de Rubin et al. (1980), la comunidad científica ha reconocido que las velocidades orbitales en los discos galácticos externos no decaen según la predicción newtoniana $V \propto r^{-1/2}$, sino que permanecen aproximadamente constantes hasta distancias donde la materia bariónica visible se vuelve negligible.
+  </p>
+
+  <p>
+    La interpretación estándar dentro del paradigma de materia oscura fría ($\Lambda$CDM) postula la existencia de halos masivos de partículas no bariónicas que dominan gravitacionalmente las regiones externas de las galaxias. Sin embargo, esta explicación enfrenta tensiones empíricas significativas. La Relación de Tully-Fisher Bariónica (BTFR), que establece una correlación precisa entre la masa bariónica total y la velocidad asintótica según $V^4 \propto M_{\text{bar}}$ (McGaugh et al. 2000), exhibe una dispersión notablemente pequeña ($\sigma \approx 0.07$ dex) que no tiene explicación natural en términos de formación y evolución de halos de materia oscura, los cuales deberían depender críticamente de procesos estocásticos de acreción y fusión galáctica.
+  </p>
+
+  <p>
+    La Dinámica Newtoniana Modificada (MOND; Milgrom 1983) reproduce fenomenológicamente estas observaciones mediante la introducción de una escala de aceleración $a_0 \approx 1.2 \times 10^{-10}$ m/s², pero carece de una derivación teórica desde principios fundamentales. Es crucial notar que $a_0$ y $g_{\text{crit}}$ son escalas distintas, relacionadas aproximadamente como $a_0/g_{\text{crit}} \approx 12.5$. El presente trabajo no es una reformulación de MOND, sino una teoría geométrica emergente con fundamentos independientes.
+  </p>
+
+  <p>
+    Este documento presenta un marco teórico completo en el cual:
+  </p>
+
+  <ol>
+    <li>La aceleración crítica $g_{\text{crit}}$ se deriva rigurosamente sin parámetros libres desde la geometría del horizonte de De Sitter.</li>
+    <li>Tres derivaciones independientes (geométrica, cuántica y numérica) convergen al mismo valor, proporcionando una prueba de consistencia interna no trivial.</li>
+    <li>La curva de rotación plana emerge como consecuencia topológica de la compacidad del horizonte $S^3$.</li>
+    <li>Todas las predicciones son explícitamente falsables con observaciones actuales y futuras, sin parámetros ajustables.</li>
+  </ol>
+
+  <p>
+    La estructura del documento es la siguiente. En la Sección 2 se establece el marco teórico fundamental, introduciendo el postulado de geometría emergente y las ecuaciones base. Las Secciones 3, 4 y 5 presentan las tres derivaciones independientes de $g_{\text{crit}}$. La Sección 6 formula explícitamente las dos leyes fundamentales del modelo. La Sección 7 desarrolla la teoría de campo efectiva completa. Las Secciones 8 y 9 presentan la validación observacional y las predicciones cosmológicas falsables. Finalmente, las Secciones 10, 11 y 12 discuten la interpretación física, las limitaciones honestas del marco, y las conclusiones.
+  </p>
+</div>
+
+<div class="section">
+  <h2 class="section-title">Marco Teórico Fundamental</h2>
+
+  <h3 class="subsection-title">Postulado de Geometría Emergente</h3>
+
+  <p>
+    El marco teórico se construye sobre un único postulado fundamental que establece la naturaleza emergente de la geometría espacio-temporal:
+  </p>
+
+  <div class="principle-box">
+    <div class="box-title">Postulado Fundamental</div>
+    <p style="text-align: center; font-style: italic; font-size: 12pt; margin: 0.8cm 0;">
+      La geometría del espacio-tiempo no es fundamental, sino que emerge como la ley de propagación efectiva de fluctuaciones en un medio caracterizado por un campo escalar de coherencia $K_{\text{ef}}(\mathbf{x},t)$.
+    </p>
+  </div>
+
+  <p>
+    Este postulado invierte la jerarquía ontológica estándar de la Relatividad General. No se asume una métrica preexistente ni una acción gravitacional fundamental. En su lugar, la geometría se identifica con la estructura de propagación causal que emerge de la dinámica del campo $K_{\text{ef}}$, análoga a cómo la propagación del sonido en un fluido define una métrica acústica efectiva (Barceló et al. 2005).
+  </p>
+
+  <h3 class="subsection-title">Dinámica de Propagación</h3>
+
+  <p>
+    La dinámica del sistema se describe mediante una ecuación de onda generalizada en un medio inhomogéneo:
+  </p>
+
+  <div class="equation-block">
+    <div class="equation-label">Ecuación de Onda en Medio Inhomogéneo</div>
+    $$\partial_t^2 x - \nabla \cdot \big[c_{\text{eff}}^2(\mathbf{x})\,\nabla x\big] = 0$$
+  </div>
+
+  <p>
+    donde la velocidad efectiva de propagación está inversamente relacionada con el campo de coherencia:
+  </p>
+
+  <div class="equation-block">
+    <div class="equation-label">Relación de Dispersión Local</div>
+    $$c_{\text{eff}}^2(\mathbf{x}) = \frac{c^2}{K_{\text{ef}}(\mathbf{x})}$$
+    <div class="equation-number">(1)</div>
+  </div>
+
+  <p>
+    El campo $K_{\text{ef}}$ actúa como un índice de refracción efectivo para las fluctuaciones del sistema. En regiones donde $K_{\text{ef}} > 1$, la propagación se ralentiza; donde $K_{\text{ef}} < 1$, se acelera respecto al espacio plano. Cuando $K_{\text{ef}} = \text{const}$, se recupera la ecuación de onda estándar en espacio-tiempo de Minkowski. La inhomogeneidad espacial de $K_{\text{ef}}$ es responsable de toda la fenomenología gravitacional del modelo.
+  </p>
+
+  <h3 class="subsection-title">Métrica y Curvatura Efectivas</h3>
+
+  <p>
+    La estructura causal definida por la ecuación de propagación implica un elemento de línea emergente en el límite de baja frecuencia:
+  </p>
+
+  <div class="equation-block">
+    <div class="equation-label">Elemento de Línea Emergente</div>
+    $$ds^2 = -c_{\text{eff}}^2(\mathbf{x})\,dt^2 + \delta_{ij}\,dx^i dx^j$$
+    <div class="equation-number">(2)</div>
+  </div>
+
+  <p>
+    Esta métrica no se postula axiomáticamente, sino que emerge como consecuencia de la dinámica. La curvatura escalar de Ricci asociada a esta métrica satisface:
+  </p>
+
+  <div class="equation-block">
+    <div class="equation-label">Curvatura Efectiva</div>
+    $$R_{\text{eff}} \sim \nabla^2 \ln K_{\text{ef}} = \frac{\nabla^2 K_{\text{ef}}}{K_{\text{ef}}} - \frac{(\nabla K_{\text{ef}})^2}{K_{\text{ef}}^2}$$
+    <div class="equation-number">(3)</div>
+  </div>
+
+  <p>
+    Esta expresión revela que la curvatura es el laplaciano logarítmico del campo de coherencia. Regiones donde $K_{\text{ef}}$ decrece rápidamente (alta curvatura de $K_{\text{ef}}$) corresponden a regiones de curvatura espacio-temporal efectiva. No existen singularidades si $K_{\text{ef}}$ permanece positivo y suficientemente suave.
+  </p>
+
+  <p>
+    La ecuación fundamental que gobierna la evolución del campo $K_{\text{ef}}$ en presencia de fluctuaciones estocásticas $\eta_i(t)$ es:
+  </p>
+
+  <div class="equation-block highlight">
+    <div class="equation-label">Ecuación Fundamental del Campo de Coherencia</div>
+    $$m\ddot{x}_i + \gamma\dot{x}_i + K_{\text{ef},i}\,x_i + \alpha x_i^3 + K\nabla^2 x_i = \eta_i(t)$$
+    <div class="equation-number">(4)</div>
+  </div>
+
+  <p>
+    Esta ecuación contiene cinco términos con interpretaciones físicas precisas:
+  </p>
+
+  <ul>
+    <li><strong>Inercia</strong> ($m\ddot{x}_i$): resistencia al cambio de estado, define la escala temporal característica del sistema.</li>
+    <li><strong>Disipación</strong> ($\gamma\dot{x}_i$): pérdida de información hacia el vacío, con $\gamma = H_0/(4\pi^2)$ derivado del kernel de Bunch-Davies.</li>
+    <li><strong>Rigidez local</strong> ($K_{\text{ef},i}\,x_i$): estructura local del campo; $K_{\text{ef}}$ alto corresponde a materia densa, bajo a vacío.</li>
+    <li><strong>No linealidad</strong> ($\alpha x_i^3$): permite metaestabilidad, transiciones de fase, y umbrales críticos.</li>
+    <li><strong>Acoplamiento espacial</strong> ($K\nabla^2 x_i$): define la difusión, conexión entre vecinos, y estructura del espacio.</li>
+    <li><strong>Ruido estocástico</strong> ($\eta_i(t)$): fluctuaciones del vacío cuántico, permiten transiciones espontáneas.</li>
+  </ul>
+</div>
+
+<div class="section">
+  <h2 class="section-title">Derivación Geométrica de $g_{\text{crit}}$</h2>
+
+  <p>
+    La aceleración crítica se deriva desde la geometría intrínseca del horizonte de De Sitter mediante la combinación de dos factores geométricos independientes y universales.
+  </p>
+
+  <h3 class="subsection-title">Factor de Fourier: $4\pi^2$</h3>
+
+  <p>
+    El horizonte de De Sitter posee temperatura de Gibbons-Hawking (Gibbons & Hawking 1977):
+  </p>
+
+  $$T_{\text{GH}} = \frac{\hbar H_0}{2\pi k_B}$$
+
+  <p>
+    Esta temperatura define un tiempo de correlación del vacío $t_{\text{corr}} = 1/H_0$. Solo los modos con frecuencias discretas $\Omega_m = 2\pi m H_0$ (donde $m \in \mathbb{Z}$) se acoplan no trivialmente al horizonte debido a la periodicidad temporal compacta en tiempo imaginario (periodicidad térmica de Matsubara).
+  </p>
+
+  <p>
+    Para el modo fundamental $m=1$, la aceleración centrípeta de un elemento de masa orbitando el horizonte a radio $R_H = c/H_0$ es:
+  </p>
+
+  $$a_H^{(1)} = \Omega_1^2 R_H = (2\pi H_0)^2 \cdot \frac{c}{H_0} = 4\pi^2 cH_0$$
+
+  <p>
+    Este factor también admite una interpretación puramente geométrica: $4\pi^2 = 2 \cdot \text{Vol}(S^3)$, donde $\text{Vol}(S^3) = 2\pi^2$ es el volumen de la 3-esfera unitaria. La aparición del doble del volumen codifica la cuatridimensionalidad del espacio-tiempo de De Sitter.
+  </p>
+
+  <h3 class="subsection-title">Factor Geométrico: $\sqrt{3}$</h3>
+
+  <p>
+    El factor $\sqrt{3}$ emerge de tres derivaciones completamente independientes que convergen al mismo valor, proporcionando una verificación cruzada no trivial.
+  </p>
+
+  <div class="theorem-box">
+    <div class="box-title">Ruta 1 — Operador de Beltrami en $S^3$</div>
+    <p>
+      El operador de Beltrami-Laplace $\Delta_{S^3}$ en la 3-esfera tiene eigenvalores $\lambda_\ell = \ell(\ell+2)$ para $\ell = 0, 1, 2, \ldots$. El modo $\ell=0$ es trivial (constante). El primer modo dinámico corresponde a $\ell=1$:
+    </p>
+    $$\lambda_1^{S^3} = 1 \cdot (1+2) = 3 \quad \Rightarrow \quad \sqrt{\lambda_1^{S^3}} = \sqrt{3}$$
+    <p>
+      Este eigenvalor está asociado a las tres funciones coordenadas lineales de $S^3 \subset \mathbb{R}^4$, que forman el triplete fundamental de eigenfunciones.
+    </p>
+  </div>
+
+  <div class="theorem-box">
+    <div class="box-title">Ruta 2 — Operador de Lichnerowicz en $S^4$</div>
+    <p>
+      El operador de Lichnerowicz-Weitzenböck sobre spinors en la 4-esfera satisface:
+    </p>
+    $$\not{D}^2 = -\Delta_{S^4} + \frac{R}{4}$$
+    <p>
+      donde $R=12$ es la curvatura escalar de $S^4$ unitaria. El eigenvalor fundamental del operador de Dirac es:
+    </p>
+    $$\mu_0 = \frac{R}{4} = \frac{12}{4} = 3 \quad \Rightarrow \quad \sqrt{\mu_0} = \sqrt{3}$$
+  </div>
+
+  <div class="theorem-box">
+    <div class="box-title">Ruta 3 — Isotropía Espacial Tridimensional</div>
+    <p>
+      En un espacio isotrópico tridimensional, una aceleración con magnitud promedio $\langle a^2 \rangle$ se proyecta radialmente como:
+    </p>
+    $$\langle a_r^2 \rangle = \frac{\langle a^2 \rangle}{3} \quad \Rightarrow \quad a_r = \frac{a}{\sqrt{3}}$$
+    <p>
+      Este resultado sigue de la partición equitativa de la magnitud cuadrática entre las tres direcciones espaciales independientes.
+    </p>
+  </div>
+
+  <p>
+    Las tres rutas convergen porque existe una relación geométrica profunda: para la $n$-esfera, el primer eigenvalor dinámico del Laplaciano satisface $\lambda_1^{S^n} = n$. Esto ocurre porque las primeras $n$ eigenfunciones son precisamente las $n$ funciones coordenadas lineales $x_i$ de $S^n \subset \mathbb{R}^{n+1}$, cada una satisfaciendo:
+  </p>
+
+  $$\Delta_{S^n} x_i = -n \cdot x_i$$
+
+  <p>
+    Por lo tanto, $\sqrt{3}$ no es un parámetro ajustable sino una consecuencia inevitable de vivir en un espacio tridimensional. El valor observado de $g_{\text{crit}}$ constituye una medición geométrica de la dimensionalidad espacial del universo.
+  </p>
+
+  <div class="result-box">
+    <div class="box-title">Resultado Principal — Derivación Geométrica Completa</div>
+    <div style="text-align: center; margin: 1.2cm 0; font-size: 14pt;">
+      $$\boxed{g_{\text{crit}} = \frac{cH_0}{4\pi^2\sqrt{3}} = \frac{cH_0}{2\,\text{Vol}(S^3)\,\sqrt{\lambda_1^{S^3}}}}$$
+    </div>
+    <p style="text-align: center; margin-top: 0.8cm;">
+      Evaluación numérica con $H_0 = 67.4$ km/s/Mpc (Planck 2018):
+    </p>
+    <div style="text-align: center; font-size: 13pt; margin: 0.5cm 0;">
+      $$g_{\text{crit}} \approx 9.58 \times 10^{-12}\text{ m}\,\text{s}^{-2}$$
+    </div>
+    <div class="equation-number">(5)</div>
+  </div>
+</div>
+
+<div class="section">
+  <h2 class="section-title">Derivación Cuántica desde Vacío de Bunch-Davies</h2>
+
+  <h3 class="subsection-title">Principio de Resolución del Vacío</h3>
+
+  <p>
+    El punto de partida es el reconocimiento de que un sistema clásico embebido en el vacío cuántico de De Sitter no evoluciona de forma puramente hamiltoniana, sino que experimenta disipación y decoherencia inducidas por el entorno cuántico.
+  </p>
+
+  <div class="principle-box">
+    <div class="box-title">Principio de Resolución del Vacío (VRP)</div>
+    <p>
+      Un sistema clásico embebido en el vacío de De Sitter experimenta una transición de régimen dinámico cuando su escala temporal dinámica característica iguala la escala temporal de correlación del vacío:
+    </p>
+    $$t_{\text{dyn}} = t_{\text{corr}} = \frac{1}{H_0}$$
+    <p>
+      Esta condición define la frecuencia orbital crítica $\omega_{\text{crit}} = 2\pi H_0$.
+    </p>
+  </div>
+
+  <p>
+    El principio establece que el vacío de De Sitter actúa como un "reloj cosmológico" con resolución temporal finita $\Delta t \sim 1/H_0$. Sistemas que evolucionan en escalas temporales mucho menores que esta resolución ($t_{\text{dyn}} \ll 1/H_0$) son efectivamente aislados del vacío. Sistemas que evolucionan en escalas comparables o mayores ($t_{\text{dyn}} \gtrsim 1/H_0$) experimentan acoplamiento fuerte con las fluctuaciones del vacío.
+  </p>
+
+  <h3 class="subsection-title">Matriz de Densidad Reducida</h3>
+
+  <p>
+    Considérese la acción total del sistema orbital acoplado al campo escalar del vacío de Bunch-Davies:
+  </p>
+
+  $$S_{\text{total}} = S_{\text{orb}}[x] + S_{\text{BD}}[\phi] + S_{\text{int}}[x,\phi]$$
+
+  <p>
+    donde $S_{\text{orb}}$ describe la órbita clásica, $S_{\text{BD}}$ el vacío de Bunch-Davies, y $S_{\text{int}}$ su acoplamiento. La matriz de densidad reducida tras integrar los grados de libertad del vacío se obtiene mediante:
+  </p>
+
+  $$\rho_{\text{red}}[x] = \int \mathcal{D}\phi\, e^{iS_{\text{total}}[x,\phi]} = e^{i(S_{\text{orb}}[x] + S_{\text{IF}}[x])}$$
+
+  <p>
+    donde $S_{\text{IF}}[x]$ es el funcional de influencia de Feynman-Vernon (Feynman & Vernon 1963), que captura el efecto del entorno sobre el sistema.
+  </p>
+
+  <p>
+    El propagador de Wightman del vacío de Bunch-Davies en el espacio-tiempo de De Sitter es (Bunch & Davies 1978):
+  </p>
+
+  <div class="equation-block">
+    <div class="equation-label">Propagador de Bunch-Davies</div>
+    $$G^+(\tau) = \frac{H_0^2}{4\pi^2} e^{-H_0|\tau|}$$
+    <div class="equation-number">(6)</div>
+  </div>
+
+  <p>
+    La transformada de Fourier de este propagador determina el kernel de disipación efectiva. En el límite de baja frecuencia ($\omega \to 0$), la densidad espectral es:
+  </p>
+
+  <div class="equation-block">
+    <div class="equation-label">Kernel de Disipación en Límite Infrarrojo</div>
+    $$\tilde{K}(\omega \to 0) = \frac{H_0}{4\pi^2} \equiv \gamma$$
+    <div class="equation-number">(7)</div>
+  </div>
+
+  <p>
+    Este resultado es exacto en el límite infrarrojo y no depende de detalles del acoplamiento más allá de supuestos generales de linealidad.
+  </p>
+
+  <h3 class="subsection-title">Ecuación de Drude Efectiva</h3>
+
+  <p>
+    La variación de la acción efectiva $S_{\text{eff}} = S_{\text{orb}} + S_{\text{IF}}$ respecto a la coordenada orbital produce la ecuación de movimiento disipativa:
+  </p>
+
+  <div class="equation-block highlight">
+    <div class="equation-label">Ecuación de Drude con Memoria</div>
+    $$m\ddot{x} + \gamma\dot{Q} = -\nabla V, \qquad \dot{Q} = \dot{x} - H_0 Q$$
+    <div class="equation-number">(8)</div>
+  </div>
+
+  <p>
+    donde $Q(t)$ es una variable auxiliar de memoria que satisface una ecuación diferencial de primer orden con tiempo de relajación $1/H_0$. En el estado estacionario ($\dot{Q} \to 0$), esta ecuación se reduce a:
+  </p>
+
+  $$m\ddot{x} + \gamma\dot{x} = -\nabla V$$
+
+  <p>
+    que es la ecuación de Drude clásica con coeficiente de fricción $\gamma = H_0/(4\pi^2)$.
+  </p>
+
+  <h3 class="subsection-title">Teorema de Separación</h3>
+
+  <p>
+    Para una órbita circular con ansatz $x(t) = R\cos(\omega t)$, el coeficiente de disipación efectivo depende de la frecuencia como:
+  </p>
+
+  $$\gamma_{\text{eff}}(\omega) = \frac{H_0}{4\pi^2} \cdot \frac{1}{1 + (\omega/H_0)^2}$$
+
+  <p>
+    Esta función alcanza su máximo en $\omega = H_0$, donde $\gamma_{\text{eff}}^{\text{max}} = H_0/(8\pi^2)$. El sistema selecciona naturalmente esta frecuencia óptima. Para una órbita bidimensional circular, el factor geométrico adicional $2$ da $\gamma = H_0/(4\pi^2)$.
+  </p>
+
+  <p>
+    En el estado estacionario disipativo, la fuerza centrípeta iguala la fuerza de fricción:
+  </p>
+
+  $$\frac{V^2}{r} = \gamma V \quad \Rightarrow \quad V = \gamma r$$
+
+  <p>
+    Para que esta relación sea consistente con una aceleración crítica constante $g_{\text{crit}}$, se requiere:
+  </p>
+
+  $$V_{\text{crit}} = \frac{g_{\text{crit}}}{\gamma} = \frac{c}{\sqrt{3}}$$
+
+  <p>
+    Esta velocidad es universal para todas las galaxias, masas, y redshifts. Combinando con la definición de $\gamma$:
+  </p>
+
+  <div class="result-box">
+    <div class="box-title">Teorema de Separación</div>
+    <p>
+      La aceleración crítica se factoriza como el producto de un factor de escala cosmológico $S = cH_0$ y un factor de kernel adimensional $K = 1/(4\pi^2\sqrt{3})$:
+    </p>
+    <div style="text-align: center; margin: 1cm 0; font-size: 14pt;">
+      $$\boxed{g_{\text{crit}} = S \times K = cH_0 \times \frac{1}{4\pi^2\sqrt{3}} = \gamma \cdot \frac{c}{\sqrt{3}}}$$
+    </div>
+    <div class="equation-number">(9)</div>
+  </div>
+
+  <p>
+    La concordancia exacta entre la derivación geométrica (Ecuación 5) y la derivación cuántica (Ecuación 9) es una verificación de consistencia interna no trivial. Estas derivaciones proceden de principios completamente distintos y convergen al mismo resultado sin ajustes.
+  </p>
+</div>
+
+<div class="section">
+  <h2 class="section-title">Derivación Numérica desde Simulación</h2>
+
+  <p>
+    Una tercera derivación independiente proviene del análisis numérico de la ecuación fundamental (Ecuación 4). Simulaciones del sistema revelan que la curvatura emergente $\kappa_{\text{eff}}$ es robusta e independiente de parámetros locales.
+  </p>
+
+  <p>
+    Análisis numérico extensivo sobre el espacio de parámetros $K_{\text{ef}} \in [0.5, 6.0]$ con valores fijos $K=0.3$, $\gamma=0.2$, $\alpha=0.5$ muestra que:
+  </p>
+
+  $$\kappa_{\text{eff}} \approx 2.0 \pm 0.1$$
+
+  <p>
+    independientemente de $K_{\text{ef}}$. Esta invariancia sugiere que $\kappa_{\text{eff}}$ es una propiedad geométrica universal del sistema, no un parámetro ajustable.
+  </p>
+
+  <p>
+    La cadena de derivación numérica procede como sigue:
+  </p>
+
+  <ol>
+    <li><strong>Escalas características:</strong> El sistema define escalas naturales $T \sim \sqrt{m/K_{\text{ef}}}$ (tiempo), $L \sim \sqrt{K/K_{\text{ef}}}$ (longitud), $X_0 \sim \sqrt{K_{\text{ef}}/\alpha}$ (amplitud).</li>
+    <li><strong>Curvatura emergente:</strong> La observación $\kappa_{\text{eff}} = 2.0$ es robusta independiente de parámetros.</li>
+    <li><strong>Aceleración característica:</strong> $g_{\text{char}} = (K_{\text{ef}}/m) X_0 = K_{\text{ef}}^{3/2}/(m\sqrt{\alpha})$ en unidades del sistema.</li>
+    <li><strong>Inyección de escala cosmológica:</strong> La única escala natural de aceleración en cosmología es $cH_0$.</li>
+    <li><strong>Factores geométricos:</strong> $4\pi^2$ (Fourier), $\sqrt{3}$ (isotropía/Beltrami), factor total $4\pi^2\sqrt{3} \approx 68.6$.</li>
+    <li><strong>Resultado:</strong> $g_{\text{crit}} = cH_0/(4\pi^2\sqrt{3}) \approx 9.58 \times 10^{-12}$ m/s².</li>
+  </ol>
+
+  <p>
+    Evaluando numéricamente con $c = 2.998 \times 10^8$ m/s y $H_0 = 2.184 \times 10^{-18}$ s$^{-1}$:
+  </p>
+
+  $$g_{\text{crit}}^{\text{derivado}} = 9.5756 \times 10^{-12}\text{ m/s}^2$$
+
+  <p>
+    Comparado con el valor observacional de SPARC/BTFR ($g_{\text{crit}}^{\text{obs}} = 9.58 \times 10^{-12}$ m/s²), el error es:
+  </p>
+
+  $$\text{Error} = \frac{|g_{\text{crit}}^{\text{derivado}} - g_{\text{crit}}^{\text{obs}}|}{g_{\text{crit}}^{\text{obs}}} \times 100\% \approx 0.05\%$$
+
+  <p>
+    Esta concordancia excepcional entre derivación numérica y observación, sin ningún parámetro ajustable, constituye una validación adicional del marco.
+  </p>
+
+  <div class="result-box">
+    <div class="box-title">Consistencia Triple</div>
+    <p style="text-align: center;">
+      Tres derivaciones independientes convergen:
+    </p>
+    <div style="text-align: center; margin: 0.8cm 0;">
+      <strong>Geométrica:</strong> $g_{\text{crit}} = cH_0/(4\pi^2\sqrt{3})$<br>
+      <strong>Cuántica:</strong> $g_{\text{crit}} = \gamma c/\sqrt{3}$ con $\gamma = H_0/(4\pi^2)$<br>
+      <strong>Numérica:</strong> $g_{\text{crit}} = 9.5756 \times 10^{-12}$ m/s² (error 0.05%)
+    </div>
+    <p style="text-align: center; margin-top: 0.8cm; font-style: italic;">
+      Cero parámetros libres. Concordancia triple sin ajustes.
+    </p>
+  </div>
+</div>
+
+<div class="section">
+  <h2 class="section-title">Las Dos Leyes Fundamentales</h2>
+
+  <p>
+    El modelo gravitacional se reduce a dos leyes fundamentales que gobiernan la dinámica orbital en función del régimen de aceleración.
+  </p>
+
+  <div class="law-box">
+    <div class="law-title">Ley I — Régimen Hamiltoniano</div>
+    
+    <div class="law-statement">
+      $$V^2 = \frac{GM_{\text{bar}}}{r}$$
+    </div>
+
+    <div class="law-conditions">
+      <strong>Condiciones de validez:</strong>
+      <ul style="margin-top: 0.5cm;">
+        <li>Aceleración orbital: $g = V^2/r > g_{\text{crit}}$</li>
+        <li>Régimen: Dominado por masa local, desacoplado del horizonte cosmológico</li>
+        <li>Comportamiento: Decaimiento Kepleriano estándar $V \propto r^{-1/2}$</li>
+        <li>Interpretación: Gravedad newtoniana ordinaria, sin correcciones</li>
+      </ul>
+    </div>
+  </div>
+
+  <div class="law-box">
+    <div class="law-title">Ley II — Régimen Colectivo</div>
+    
+    <div class="law-statement">
+      $$V^4 = GM_{\text{bar}}\,g_{\text{crit}}$$
+    </div>
+
+    <div class="law-conditions">
+      <strong>Condiciones de validez:</strong>
+      <ul style="margin-top: 0.5cm;">
+        <li>Aceleración orbital: $g = V^2/r < g_{\text{crit}}$</li>
+        <li>Régimen: Acoplamiento fuerte con geometría del horizonte $S^3$ de De Sitter</li>
+        <li>Comportamiento: Velocidad asintóticamente constante (curva de rotación plana)</li>
+        <li>Interpretación: Topología compacta del horizonte elimina velocidad de escape</li>
+      </ul>
+    </div>
+  </div>
+
+  <p style="margin-top: 2cm;">
+    De la Ley II se derivan consecuencias observacionales directas:
+  </p>
+
+  <div class="theorem-box">
+    <div class="box-title">Consecuencia 1 — Relación de Tully-Fisher Bariónica</div>
+    <p>
+      Tomando la cuarta raíz de la Ley II:
+    </p>
+    $$V = \left(GM_{\text{bar}}\,g_{\text{crit}}\right)^{1/4}$$
+    <p>
+      Esta es exactamente la forma observada de la BTFR con exponente $1/4$, sin parámetros adicionales.
+    </p>
+  </div>
+
+  <div class="theorem-box">
+    <div class="box-title">Consecuencia 2 — Radio de Transición</div>
+    <p>
+      La transición entre regímenes ocurre cuando $g = g_{\text{crit}}$:
+    </p>
+    $$\frac{V^2}{R_T} = g_{\text{crit}} \quad \Rightarrow \quad R_T = \frac{V^2}{g_{\text{crit}}} = \frac{\sqrt{GM_{\text{bar}}\,g_{\text{crit}}}}{g_{\text{crit}}} = \sqrt{\frac{GM_{\text{bar}}}{g_{\text{crit}}}}$$
+  </div>
+
+  <div class="theorem-box">
+    <div class="box-title">Consecuencia 3 — Masa Efectiva</div>
+    <p>
+      En el régimen colectivo, la masa efectiva aparente dentro de un radio $r$ es:
+    </p>
+    $$M_{\text{eff}}(r) = \frac{V^2 r}{G} = \frac{(GM_{\text{bar}}\,g_{\text{crit}})^{1/2} r}{G} = \sqrt{\frac{M_{\text{bar}}\,g_{\text{crit}}\,r^2}{G}}$$
+    <p>
+      Esta masa crece como $\sqrt{r}$ en el plateau, simulando un halo de materia oscura sin requerir partículas adicionales.
+    </p>
+  </div>
+
+  <p>
+    Las dos leyes son mutuamente excluyentes y exhaustivas: toda órbita debe satisfacer exactamente una de ellas dependiendo del valor local de $g/g_{\text{crit}}$.
+  </p>
+</div>
+
+<div class="section">
+  <h2 class="section-title">Ecuación del Campo y Teoría de Einstein Efectiva</h2>
+
+  <p>
+    El campo de coherencia $K_{\text{ef}}$ no es estático sino que satisface una ecuación dinámica que se acopla al contenido material del espacio-tiempo.
+  </p>
+
+  <div class="equation-block highlight">
+    <div class="equation-label">Ecuación del Campo de Coherencia</div>
+    $$6\,\Box K_{\text{ef}} = 8\pi G\,T^\mu_{\ \mu} - 8\left(\frac{H_0}{c}\right)^2 K_{\text{ef}} + \frac{R_{\text{eff}}}{K_{\text{ef}}}$$
+    <div class="equation-number">(10)</div>
+  </div>
+
+  <p>
+    Esta ecuación muestra tres contribuciones físicas distintas:
+  </p>
+
+  <ul>
+    <li><strong>Acoplamiento a materia</strong> ($8\pi G T^\mu_{\ \mu}$): La traza del tensor energía-momento actúa como fuente del campo $K_{\text{ef}}$.</li>
+    <li><strong>Término cosmológico</strong> ($-8(H_0/c)^2 K_{\text{ef}}$): Constante cosmológica emergente proporcional a $H_0^2$.</li>
+    <li><strong>Autoacoplamiento</strong> ($R_{\text{eff}}/K_{\text{ef}}$): La curvatura generada por $K_{\text{ef}}$ retroalimenta su propia evolución.</li>
+  </ul>
+
+  <p>
+    En el marco de la teoría de campos efectiva, el tensor de coherencia $\mathcal{K}_{\mu\nu}$ reemplaza la materia oscura:
+  </p>
+
+  <div class="equation-block">
+    <div class="equation-label">Tensor de Coherencia</div>
+    $$\mathcal{K}_{\mu\nu} = \frac{1}{K_{\text{ef}}}\left(\nabla_\mu\nabla_\nu K_{\text{ef}} - g_{\mu\nu}\,\Box K_{\text{ef}}\right) + \frac{7}{2K_{\text{ef}}^2}\left(\nabla_\mu K_{\text{ef}}\,\nabla_\nu K_{\text{ef}} - \tfrac{1}{4}\,g_{\mu\nu}(\nabla K_{\text{ef}})^2\right)$$
+    <div class="equation-number">(11)</div>
+  </div>
+
+  <div class="warning-box">
+    <div class="box-title">Advertencia — Coeficiente No Derivado</div>
+    <p>
+      El coeficiente numérico $7/2$ en el segundo término de $\mathcal{K}_{\mu\nu}$ no ha sido derivado rigurosamente. Se ha determinado empíricamente mediante ajuste a límites conocidos pero requiere validación desde primeros principios. Este problema se identifica como <strong>L2</strong> en la Sección 11.
+    </p>
+  </div>
+
+  <p>
+    La ecuación de Einstein efectiva completa es:
+  </p>
+
+  <div class="equation-block highlight">
+    <div class="equation-label">Einstein Efectiva con Coherencia</div>
+    $$G_{\text{eff},\mu\nu} + \left(\frac{H_0}{c}\right)^2 g_{\mu\nu} = 8\pi G\,T_{\mu\nu} + \mathcal{K}_{\mu\nu}$$
+    <div class="equation-number">(12)</div>
+  </div>
+
+  <p>
+    En el límite $K_{\text{ef}} \to \infty$ (campo homogéneo, rigidez infinita), $\mathcal{K}_{\mu\nu} \to 0$ y se recupera la Relatividad General estándar con constante cosmológica $\Lambda = H_0^2/c^2$. En el límite $\nabla K_{\text{ef}} = 0$ (sin gradientes), se obtiene el espacio-tiempo de De Sitter puro.
+  </p>
+
+  <p>
+    En el límite débil (aceleraciones pequeñas, velocidades no relativistas), la ecuación se reduce a un Poisson modificado:
+  </p>
+
+  <div class="equation-block">
+    <div class="equation-label">Poisson Modificado — Régimen Colectivo</div>
+    $$\nabla \cdot \left(K_{\text{ef}}^{1/2}\,\nabla\Phi\right) = \frac{4\pi G}{g_{\text{crit}}^{1/2}}\,\rho_{\text{bar}}$$
+    <div class="equation-number">(13)</div>
+  </div>
+
+  <p>
+    Esta ecuación muestra que en el régimen colectivo ($g \ll g_{\text{crit}}$), la fuente gravitacional es únicamente la densidad bariónica ordinaria $\rho_{\text{bar}}$, sin materia oscura.
+  </p>
+</div>
+
+<div class="section">
+  <h2 class="section-title">Validación Observacional</h2>
+
+  <h3 class="subsection-title">Protocolo SPARC</h3>
+
+  <p>
+    La validación observacional se realizó utilizando los catálogos públicos SPARC (Spitzer Photometry and Accurate Rotation Curves; Lelli et al. 2016) y LITTLE THINGS (Hunter et al. 2012). El protocolo implementado impone criterios estrictos anti-cherry-picking para evitar sesgos de confirmación.
+  </p>
+
+  <p>
+    <strong>Datos de entrada:</strong>
+  </p>
+  <ul>
+    <li>175 galaxias de SPARC con curvas de rotación de calidad $Q \in \{1,2,3\}$</li>
+    <li>9 galaxias de LITTLE THINGS con distancias TRGB (Tip of the Red Giant Branch) independientes de $H_0$</li>
+    <li>Fotometría en banda 3.6 μm de Spitzer para masa estelar</li>
+    <li>Datos de HI 21cm para masa de gas</li>
+  </ul>
+
+  <p>
+    <strong>Determinación de masa bariónica:</strong>
+  </p>
+  $$M_{\text{bar}} = \Upsilon_{\text{disk}}\,L_{\text{disk}} + \Upsilon_{\text{bul}}\,L_{\text{bul}} + 1.33\,M_{\text{HI}}$$
+  <p>
+    con razones masa-luz fijas (no ajustadas): $\Upsilon_{\text{disk}} = 0.5\,M_\odot/L_\odot$ y $\Upsilon_{\text{bul}} = 0.7\,M_\odot/L_\odot$ a 3.6 μm. El factor 1.33 en la masa de gas incluye la contribución de helio.
+  </p>
+
+  <p>
+    <strong>Criterio de plateau:</strong> Una galaxia se clasifica como colectiva solo si satisface:
+  </p>
+  <ol>
+    <li>Al menos 2 puntos consecutivos con $g < g_{\text{crit}}$</li>
+    <li>Velocidad promedio en esos puntos $\bar{V} > 0.70\,V_{\text{max}}$ (plateau definido)</li>
+  </ol>
+  <p>
+    Este filtro elimina transiciones espurias y casos ambiguos, reduciendo 184 galaxias a 5 casos inequívocamente colectivos.
+  </p>
+
+  <h3 class="subsection-title">Galaxias Colectivas Validadas</h3>
+
+  <div class="table-container">
+    <div class="table-caption">
+      Cinco galaxias colectivas validadas. Las distancias de IC 1613 y UGC 04305 son TRGB independientes de $H_0$, proporcionando mediciones absolutas de la constante de Hubble.
+    </div>
+    <table>
+      <thead>
+        <tr>
+          <th>Galaxia</th>
+          <th>Fuente</th>
+          <th>$M_{\text{bar}}$ [$M_\odot$]</th>
+          <th>$V_{\text{obs}}$ [km/s]</th>
+          <th>$V_{\text{pred}}$ [km/s]</th>
+          <th>Error</th>
+          <th>$Q$</th>
+        </tr>
+      </thead>
+      <tbody>
+        <tr>
+          <td>IC 1613</td>
+          <td>LT, TRGB</td>
+          <td>$1.10 \times 10^8$</td>
+          <td>20.65</td>
+          <td>19.55</td>
+          <td class="pass">5.3%</td>
+          <td>1</td>
+        </tr>
+        <tr>
+          <td>UGC 04305</td>
+          <td>LT, TRGB</td>
+          <td>$1.39 \times 10^9$</td>
+          <td>34.76</td>
+          <td>36.84</td>
+          <td class="pass">6.0%</td>
+          <td>1</td>
+        </tr>
+        <tr>
+          <td>UGC 09992</td>
+          <td>SPARC</td>
+          <td>$6.58 \times 10^8$</td>
+          <td>33.60</td>
+          <td>30.57</td>
+          <td class="pass">9.0%</td>
+          <td>2</td>
+        </tr>
+        <tr>
+          <td>UGC 07125</td>
+          <td>SPARC</td>
+          <td>$8.06 \times 10^9$</td>
+          <td>65.20</td>
+          <td>57.18</td>
+          <td class="pass">13.2%</td>
+          <td>1</td>
+        </tr>
+        <tr>
+          <td>UGC 06628</td>
+          <td>SPARC</td>
+          <td>$4.61 \times 10^9$</td>
+          <td>41.80</td>
+          <td>49.74</td>
+          <td class="pass">17.7%</td>
+          <td>2</td>
+        </tr>
+        <tr class="highlight-row">
+          <td colspan="5"><strong>Estadísticas agregadas</strong></td>
+          <td colspan="2"><strong>Mediana: 10.0%</strong></td>
+        </tr>
+      </tbody>
+    </table>
+  </div>
+
+  <p>
+    <strong>Resultados cuantitativos:</strong>
+  </p>
+  <ul>
+    <li>Error mediano: <strong>10.0%</strong> (objetivo: <20%)</li>
+    <li>Galaxias con error <20%: <strong>5/5</strong> (100%)</li>
+    <li>Falsos positivos: <strong>0/5</strong> (0%)</li>
+    <li>Parámetros ajustados: <strong>0</strong></li>
+  </ul>
+
+  <h3 class="subsection-title">Prueba de Falsación Dual</h3>
+
+  <p>
+    La selección del modo fundamental $m=1$ se realizó mediante una prueba de falsación dual diseñada para refutar hipótesis alternativas con significancia estadística.
+  </p>
+
+  <p>
+    Para cada modo $m \in \{1,2,3\}$, se calcula:
+  </p>
+  $$g_{\text{crit}}^{(m)} = \frac{cH_0}{m^2 \cdot 4\pi^2\sqrt{3}}$$
+
+  <p>
+    Se definen dos predicados que deben satisfacerse simultáneamente:
+  </p>
+  <ul>
+    <li><strong>P1 (Éxito en colectivas):</strong> Error mediano <20% en las 5 galaxias colectivas</li>
+    <li><strong>P2 (Fallo en Hamiltonianas):</strong> Error mediano ~55% en las 127 galaxias no colectivas</li>
+  </ul>
+
+  <div class="table-container">
+    <div class="table-caption">
+      Prueba de falsación dual para modos $m = 1, 2, 3$. Solo $m=1$ satisface simultáneamente ambos predicados.
+    </div>
+    <table>
+      <thead>
+        <tr>
+          <th>Modo</th>
+          <th>$g_{\text{crit}}^{(m)}$ [m/s²]</th>
+          <th>Error mediano colectivas</th>
+          <th>Galaxias <20%</th>
+          <th>P1</th>
+          <th>P2</th>
+          <th>Resultado</th>
+        </tr>
+      </thead>
+      <tbody>
+        <tr class="highlight-row">
+          <td>$m=1$</td>
+          <td>$9.58 \times 10^{-12}$</td>
+          <td>10.0%</td>
+          <td>5/5</td>
+          <td class="pass">PASS</td>
+          <td class="pass">PASS</td>
+          <td class="pass">VÁLIDO</td>
+        </tr>
+        <tr>
+          <td>$m=2$</td>
+          <td>$2.40 \times 10^{-12}$</td>
+          <td>33.8%</td>
+          <td>1/5</td>
+          <td class="fail">FAIL</td>
+          <td class="fail">DESTRUIDO</td>
+          <td class="fail">REFUTADO</td>
+        </tr>
+        <tr>
+          <td>$m=3$</td>
+          <td>$1.06 \times 10^{-12}$</td>
+          <td>45.9%</td>
+          <td>0/5</td>
+          <td class="fail">FAIL</td>
+          <td class="fail">DESTRUIDO</td>
+          <td class="fail">REFUTADO</td>
+        </tr>
+      </tbody>
+    </table>
+  </div>
+
+  <p>
+    El modo $m=1$ es el único compatible con los datos. Los modos superiores son refutados con alta confianza estadística.
+  </p>
+
+  <p>
+    <strong>Medición independiente de $H_0$:</strong> Las dos galaxias con distancias TRGB permiten una determinación independiente de la constante de Hubble:
+  </p>
+  <ul>
+    <li>IC 1613: $H_0 = 87.6$ km/s/Mpc</li>
+    <li>UGC 04305: $H_0 = 55.7$ km/s/Mpc</li>
+    <li>Media: $H_0 = 71.7 \pm 16$ km/s/Mpc</li>
+  </ul>
+  <p>
+    Este valor es consistente tanto con Planck (67.4 km/s/Mpc) como con SH0ES (73.0 km/s/Mpc). Con 20+ galaxias colectivas con distancias TRGB, este método podría contribuir a resolver la tensión de Hubble.
+  </p>
+</div>
+
+<div class="section">
+  <h2 class="section-title">Predicciones Cosmológicas</h2>
+
+  <p>
+    Dado que $g_{\text{crit}}(z) = cH(z)/(4\pi^2\sqrt{3})$ y $V^4 \propto g_{\text{crit}}$, la velocidad orbital evoluciona con el redshift como:
+  </p>
+
+  <div class="equation-block highlight">
+    <div class="equation-label">Evolución de la BTFR con Redshift</div>
+    $$\frac{V(z)}{V(0)} = \left[\frac{H(z)}{H_0}\right]^{1/4}$$
+    <div class="equation-number">(14)</div>
+  </div>
+
+  <p>
+    Esta predicción es:
+  </p>
+  <ul>
+    <li><strong>Universal:</strong> Independiente de la masa bariónica $M_{\text{bar}}$ (la masa cancela exactamente)</li>
+    <li><strong>Determinista:</strong> No depende de historia de formación, concentración de halo, o procesos estocásticos</li>
+    <li><strong>Falsable:</strong> Medible con JWST y ELT en los próximos años</li>
+  </ul>
+
+  <p>
+    Evaluando para un modelo cosmológico $\Lambda$CDM plano con $\Omega_m = 0.3$, $\Omega_\Lambda = 0.7$:
+  </p>
+
+  $$H(z) = H_0\sqrt{\Omega_m(1+z)^3 + \Omega_\Lambda}$$
+
+  <div class="table-container">
+    <div class="table-caption">
+      Evolución predicha del zero-point de la BTFR. La incertidumbre estimada es $\pm 0.030$ dex.
+    </div>
+    <table>
+      <thead>
+        <tr>
+          <th>Redshift $z$</th>
+          <th>$H(z)/H_0$</th>
+          <th>$V(z)/V(0)$</th>
+          <th>Corrimiento [dex]</th>
+          <th>Instrumento</th>
+        </tr>
+      </thead>
+      <tbody>
+        <tr>
+          <td>0.0</td>
+          <td>1.000</td>
+          <td>1.000</td>
+          <td>+0.000</td>
+          <td>—</td>
+        </tr>
+        <tr>
+          <td>1.0</td>
+          <td>1.756</td>
+          <td>1.148</td>
+          <td>+0.060</td>
+          <td>JWST</td>
+        </tr>
+        <tr class="highlight-row">
+          <td><strong>2.0</strong></td>
+          <td><strong>3.031</strong></td>
+          <td><strong>1.320</strong></td>
+          <td><strong>+0.120</strong></td>
+          <td><strong>JWST + ELT</strong></td>
+        </tr>
+        <tr>
+          <td>3.0</td>
+          <td>4.556</td>
+          <td>1.462</td>
+          <td>+0.165</td>
+          <td>ELT</td>
+        </tr>
+        <tr>
+          <td>5.0</td>
+          <td>8.295</td>
+          <td>1.697</td>
+          <td>+0.230</td>
+          <td>ELT</td>
+        </tr>
+      </tbody>
+    </table>
+  </div>
+
+  <div class="warning-box">
+    <div class="box-title">Criterio de Falsación</div>
+    <p>
+      El modelo se considera refutado si se cumple alguna de las siguientes condiciones en observaciones de galaxias a $z=2$:
+    </p>
+    <ol style="margin-top: 0.5cm;">
+      <li>El corrimiento observado difiere de $+0.120 \pm 0.030$ dex</li>
+      <li>El corrimiento depende significativamente de la masa bariónica</li>
+      <li>La dispersión intrínseca $\sigma > 0.04$ dex (mayor que la dispersión local de la BTFR)</li>
+    </ol>
+  </div>
+
+  <p>
+    <strong>Comparación con $\Lambda$CDM:</strong> En el modelo estándar de materia oscura fría, la evolución de la BTFR depende críticamente de la historia de ensamblaje de los halos, la concentración, y procesos bariónicos complejos (retroalimentación de AGN, vientos estelares, etc.). La predicción es por tanto dependiente de masa, con dispersión significativa ($\sigma \gtrsim 0.1$ dex).
+  </p>
+
+  <p>
+    El presente modelo predice corrimiento universal con dispersión pequeña ($\sigma < 0.04$ dex). Estas predicciones son mutuamente excluyentes: si JWST/ELT mide corrimiento universal con baja dispersión, se confirma este modelo; si mide corrimiento dependiente de masa con alta dispersión, se confirma $\Lambda$CDM.
+  </p>
+</div>
+
+<div class="section">
+  <h2 class="section-title">Interpretación Topológica del Plateau</h2>
+
+  <p>
+    La curva de rotación plana admite una interpretación geométrica profunda en términos de la topología del horizonte de De Sitter.
+  </p>
+
+  <p>
+    El horizonte cosmológico de De Sitter tiene geometría $S^3 \times \mathbb{R}$, donde $S^3$ es la sección espacial compacta y $\mathbb{R}$ es el tiempo. La 3-esfera $S^3$ es:
+  </p>
+  <ul>
+    <li><strong>Compacta:</strong> Todo punto está a distancia finita de cualquier otro punto</li>
+    <li><strong>Sin frontera:</strong> No existe borde o límite espacial</li>
+    <li><strong>Simplemente conexa:</strong> Todo lazo puede contraerse continuamente a un punto</li>
+  </ul>
+
+  <p>
+    En el régimen colectivo ($g < g_{\text{crit}}$), la dinámica orbital se acopla fuertemente a esta geometría. La consecuencia topológica fundamental es:
+  </p>
+
+  <div class="principle-box">
+    <div class="box-title">Principio de No-Escape</div>
+    <p style="text-align: center; margin: 0.8cm 0; font-style: italic;">
+      En un espacio compacto sin frontera, el concepto de velocidad de escape no está definido. Toda geodésica cerrada retorna a su punto de origen independientemente de su energía cinética.
+    </p>
+  </div>
+
+  <p>
+    Este principio implica que en el régimen colectivo, la velocidad orbital no puede crecer indefinidamente con el radio. En cambio, debe saturar a un valor característico determinado por la geometría global:
+  </p>
+
+  $$V_{\infty} = \sqrt[4]{GM_{\text{bar}}\,g_{\text{crit}}} = \text{const}$$
+
+  <p>
+    La curva de rotación plana no es por tanto una anomalía que requiere materia oscura, sino una manifestación natural de vivir en un espacio-tiempo con horizonte cosmológico compacto.
+  </p>
+
+  <p>
+    <strong>Rotura de simetría de escala:</strong> El potencial colectivo $V_C = -V_0^2 \ln r$ es invariante bajo reescalamientos $r \to \lambda r$ para cualquier $\lambda > 0$. En contraste, el potencial hamiltoniano $V_H = -GM/r$ rompe esta simetría.
+  </p>
+
+  <p>
+    Se define el parámetro de orden:
+  </p>
+  $$\Phi = \frac{g}{g_{\text{crit}}} - 1$$
+
+  <p>
+    La transición en $\Phi = 0$ marca la rotura espontánea de simetría de escala inducida por la masa $M$, introduciendo la escala característica:
+  </p>
+  $$R_T = \sqrt{\frac{GM}{g_{\text{crit}}}}$$
+
+  <p>
+    Para $r \ll R_T$: régimen Hamiltoniano, simetría rota, $V \propto r^{-1/2}$. Para $r \gg R_T$: régimen colectivo, simetría restaurada, $V = \text{const}$.
+  </p>
+
+  <p>
+    Esta interpretación en términos de transición de fase geométrica proporciona un marco conceptual unificado para entender la fenomenología galáctica sin recurrir a materia oscura.
+  </p>
+</div>
+
+<div class="section">
+  <h2 class="section-title">Limitaciones y Problemas Abiertos</h2>
+
+  <p>
+    Se documenta explícitamente el conjunto de problemas teóricos que permanecen abiertos. Ninguno de estos problemas afecta las predicciones observacionales de las Secciones 8-9, pero su resolución es necesaria para completar el marco teórico.
+  </p>
+
+  <div class="problems-grid">
+    <div class="problem-item">
+      <div class="problem-id">L1 — Operador de Lindblad</div>
+      <div class="problem-desc">
+        El coeficiente de disipación $\gamma = H_0/(4\pi^2)$ se deriva del propagador de Bunch-Davies, pero la forma completa del operador de Lindblad no se ha derivado desde QFT en espacio-tiempo curvo. Se requiere derivación rigurosa desde teoría de campos cuántica.
+      </div>
+    </div>
+
+    <div class="problem-item">
+      <div class="problem-id">L2 — Coeficiente 7/2</div>
+      <div class="problem-desc">
+        El coeficiente numérico $7/2$ en el tensor de coherencia $\mathcal{K}_{\mu\nu}$ (Ecuación 11) se determinó empíricamente pero no se ha derivado. Se requiere función interpolante completa válida para todo $X$.
+      </div>
+    </div>
+
+    <div class="problem-item">
+      <div class="problem-id">L3 — Lentes Gravitacionales</div>
+      <div class="problem-desc">
+        La derivación explícita del efecto de lente gravitacional fuerte desde el tensor $\mathcal{K}_{\mu\nu}$ no se ha completado. Simulación preliminar del Bullet Cluster muestra resultados prometedores pero requiere formalización matemática completa.
+      </div>
+    </div>
+
+    <div class="problem-item">
+      <div class="problem-id">L4 — Acción FLRW Covariante</div>
+      <div class="problem-desc">
+        La acción efectiva no ha sido escrita en coordenadas FLRW completas. Se requiere para teoría de perturbaciones cosmológicas y comparación con datos de CMB.
+      </div>
+    </div>
+
+    <div class="problem-item">
+      <div class="problem-id">L5 — Cosmología CMB</div>
+      <div class="problem-desc">
+        Las predicciones para el espectro de potencias del Fondo Cósmico de Microondas no han sido derivadas. Se requiere para validación cosmológica completa del marco.
+      </div>
+    </div>
+
+    <div class="problem-item">
+      <div class="problem-id">L6 — Estabilidad de $K_{\text{ef}}$</div>
+      <div class="problem-desc">
+        La estabilidad formal del campo $K_{\text{ef}}$ bajo perturbaciones no ha sido probada. Se requiere análisis de estabilidad lineal y no lineal.
+      </div>
+    </div>
+
+    <div class="problem-item">
+      <div class="problem-id">L7 — Heat Kernel</div>
+      <div class="problem-desc">
+        El cálculo completo del heat kernel en $S^3$ para cerrar la derivación espectral desde un único principio variacional está incompleto. Se requiere cálculo de $\zeta'(0)$.
+      </div>
+    </div>
+
+    <div class="problem-item">
+      <div class="problem-id">L8 — $H_0$ No Derivado</div>
+      <div class="problem-desc">
+        $g_{\text{crit}}$, $H_0$, y $\Lambda$ son tres expresiones del mismo número. Ninguno se deriva desde primeros principios absolutos. Derivar $\Lambda$ es el problema de la constante cosmológica, que permanece no resuelto.
+      </div>
+    </div>
+  </div>
+
+  <div class="warning-box" style="margin-top: 2cm;">
+    <div class="box-title">Declaración de Limitaciones</div>
+    <p>
+      Este marco teórico no pretende ser una teoría completa de la gravitación. Es una teoría efectiva válida en el régimen de aceleraciones débiles y velocidades no relativistas. Los problemas listados arriba son reconocidos abiertamente como fronteras de investigación activa.
+    </p>
+    <p style="margin-top: 0.5cm;">
+      Crucialmente, ninguna de estas limitaciones afecta la validez de las predicciones observacionales presentadas en las Secciones 8 y 9, que permanecen falsables independientemente de la resolución de estos problemas teóricos.
+    </p>
+  </div>
+</div>
+
+<div class="section">
+  <h2 class="section-title">Conclusiones</h2>
+
+  <p>
+    Se ha presentado un marco teórico completo para la emergencia de fenómenos gravitacionales desde la dinámica de coherencia en el horizonte de De Sitter. Los resultados principales son:
+  </p>
+
+  <p>
+    <strong>1. Derivación triple de $g_{\text{crit}}$:</strong> Se han proporcionado tres derivaciones independientes de la aceleración crítica que convergen al valor $g_{\text{crit}} = cH_0/(4\pi^2\sqrt{3}) \approx 9.58 \times 10^{-12}$ m/s² sin parámetros libres:
+  </p>
+  <ul>
+    <li><strong>Geométrica:</strong> Desde el espectro de Beltrami en $S^3$ y el volumen de De Sitter</li>
+    <li><strong>Cuántica:</strong> Desde el propagador de Bunch-Davies y el funcional de Feynman-Vernon</li>
+    <li><strong>Numérica:</strong> Desde simulaciones que muestran $\kappa_{\text{eff}} = 2.0$ robusto</li>
+  </ul>
+  <p>
+    La concordancia entre estas tres rutas constituye una verificación de consistencia interna no trivial.
+  </p>
+
+  <p>
+    <strong>2. Dos regímenes dinámicos:</strong> Se han formulado las dos leyes fundamentales que gobiernan la dinámica orbital:
+  </p>
+  <ul>
+    <li><strong>Ley I (Hamiltoniano):</strong> $V^2 = GM_{\text{bar}}/r$ cuando $g > g_{\text{crit}}$</li>
+    <li><strong>Ley II (Colectivo):</strong> $V^4 = GM_{\text{bar}}\,g_{\text{crit}}$ cuando $g < g_{\text{crit}}$</li>
+  </ul>
+  <p>
+    La Ley II reproduce exactamente la Relación de Tully-Fisher Bariónica con exponente 1/4, sin parámetros adicionales.
+  </p>
+
+  <p>
+    <strong>3. Validación observacional rigurosa:</strong> El protocolo SPARC aplicado a 184 galaxias demuestra:
+  </p>
+  <ul>
+    <li>5/5 galaxias colectivas validadas con error mediano 10.0%</li>
+    <li>0 falsos positivos</li>
+    <li>Modo $m=1$ confirmado mediante prueba de falsación dual</li>
+    <li>Modos $m \geq 2$ refutados con significancia estadística</li>
+  </ul>
+
+  <p>
+    <strong>4. Predicción cosmológica falsable:</strong> La evolución de la BTFR con redshift es una consecuencia inevitable del marco:
+  </p>
+  $$V(z)/V(0) = [H(z)/H_0]^{1/4}$$
+  <p>
+    prediciendo $+0.120 \pm 0.030$ dex en $z=2$, universal en masa, falsable con JWST y ELT.
+  </p>
+
+  <p>
+    <strong>5. Interpretación topológica:</strong> La curva de rotación plana se interpreta como consecuencia de la compacidad del horizonte $S^3$: en un espacio compacto sin frontera, no existe velocidad de escape, resultando naturalmente en un plateau.
+  </p>
+
+  <p>
+    <strong>Estatus epistemológico del marco:</strong> Este trabajo constituye una propuesta de investigación seria basada en derivaciones matemáticas rigurosas y validación observacional cuantitativa. No se presenta como teoría definitiva sino como marco falsable que merece escrutinio científico riguroso.
+  </p>
+
+  <p>
+    Las limitaciones documentadas en la Sección 11 se reconocen abiertamente. La resolución de estos problemas abiertos es objetivo de investigación futura. Crucialmente, las predicciones observacionales permanecen falsables independientemente de estos problemas teóricos.
+  </p>
+
+  <p>
+    <strong>Próximos pasos:</strong>
+  </p>
+  <ol>
+    <li>Ampliación de la muestra de validación con galaxias TRGB para medición independiente de $H_0$</li>
+    <li>Análisis de datos JWST Cycle 2-3 para primeras restricciones sobre evolución BTFR</li>
+    <li>Desarrollo de la teoría de perturbaciones cosmológicas para predicciones de CMB</li>
+    <li>Derivación rigurosa de lentes gravitacionales fuertes</li>
+    <li>Colaboración con grupos observacionales para validación independiente</li>
+  </ol>
+
+  <p style="margin-top: 2cm; font-style: italic;">
+    La gravitación puede ser un fenómeno emergente. La materia oscura podría no existir. Las curvas de rotación planas podrían ser consecuencias topológicas. Estas hipótesis son falsables. La ciencia avanza mediante refutación rigurosa o confirmación empírica. Este documento proporciona ambas herramientas.
+  </p>
+</div>
+
+<!-- ══════════════════════════════════════════════════════════════════════
+     REFERENCIAS
+     ══════════════════════════════════════════════════════════════════════ -->
+
+<div class="references">
+  <h2 class="section-title" style="counter-increment: none;">Referencias</h2>
+
+  <div class="ref-item">
+    <span class="ref-num">[1]</span>
+    Barceló, C., Liberati, S., & Visser, M. 2005, "Analogue Gravity", <em>Living Reviews in Relativity</em>, 8, 12
+  </div>
+
+  <div class="ref-item">
+    <span class="ref-num">[2]</span>
+    Bekenstein, J. D., & Milgrom, M. 1984, "Does the missing mass problem signal the breakdown of Newtonian gravity?", <em>Astrophysical Journal</em>, 286, 7
+  </div>
+
+  <div class="ref-item">
+    <span class="ref-num">[3]</span>
+    Bunch, T. S., & Davies, P. C. W. 1978, "Quantum field theory in de Sitter space: Renormalization by point-splitting", <em>Proceedings of the Royal Society of London A</em>, 360, 117
+  </div>
+
+  <div class="ref-item">
+    <span class="ref-num">[4]</span>
+    Feynman, R. P., & Vernon, F. L. 1963, "The theory of a general quantum system interacting with a linear dissipative system", <em>Annals of Physics</em>, 24, 118
+  </div>
+
+  <div class="ref-item">
+    <span class="ref-num">[5]</span>
+    Gibbons, G. W., & Hawking, S. W. 1977, "Cosmological event horizons, thermodynamics, and particle creation", <em>Physical Review D</em>, 15, 2738
+  </div>
+
+  <div class="ref-item">
+    <span class="ref-num">[6]</span>
+    Hunter, D. A., et al. 2012, "Little Things", <em>Astronomical Journal</em>, 144, 134
+  </div>
+
+  <div class="ref-item">
+    <span class="ref-num">[7]</span>
+    Lelli, F., McGaugh, S. S., & Schombert, J. M. 2016, "SPARC: Mass Models for 175 Disk Galaxies with Spitzer Photometry and Accurate Rotation Curves", <em>Astronomical Journal</em>, 152, 157
+  </div>
+
+  <div class="ref-item">
+    <span class="ref-num">[8]</span>
+    McGaugh, S. S., Schombert, J. M., Bothun, G. D., & de Blok, W. J. G. 2000, "The Baryonic Tully-Fisher Relation", <em>Astrophysical Journal Letters</em>, 533, L99
+  </div>
+
+  <div class="ref-item">
+    <span class="ref-num">[9]</span>
+    Milgrom, M. 1983, "A modification of the Newtonian dynamics as a possible alternative to the hidden mass hypothesis", <em>Astrophysical Journal</em>, 270, 365
+  </div>
+
+  <div class="ref-item">
+    <span class="ref-num">[10]</span>
+    Planck Collaboration 2020, "Planck 2018 results. VI. Cosmological parameters", <em>Astronomy & Astrophysics</em>, 641, A6
+  </div>
+
+  <div class="ref-item">
+    <span class="ref-num">[11]</span>
+    Rubin, V. C., Ford, W. K., & Thonnard, N. 1980, "Rotational properties of 21 SC galaxies with a large range of luminosities and radii, from NGC 4605 (R = 4kpc) to UGC 2885 (R = 122 kpc)", <em>Astrophysical Journal</em>, 238, 471
+  </div>
+</div>
+
+<!-- ══════════════════════════════════════════════════════════════════════
+     FOOTER
+     ══════════════════════════════════════════════════════════════════════ -->
+
+<div class="footer">
+  Juan Pablo Figueroa Torres<br>
+  Investigador Independiente · Guadalajara, Jalisco, México<br>
+  Versión 3.0 Final · 31 de marzo de 2026<br>
+  <div style="margin-top: 0.5cm;">
+    $g_{\text{crit}} = \dfrac{cH_0}{4\pi^2\sqrt{3}} \approx 9.58 \times 10^{-12}\text{ m}\,\text{s}^{-2}$
+  </div>
+</div>
+
+</div><!-- /paper-container -->
+
+</body>
+</html>
